@@ -141,6 +141,20 @@ git push
 アプリの ＋ / − を押す。記録はその端末に保存されます。
 機種変更の前は「データを書き出す」でJSONを控えておいてください。
 
+### PCから手動でpushするとき
+
+Actionsが毎日リモートにコミットするため、**必ず先に取り込む**こと。
+
+```powershell
+cd C:\Users\ikega\manga-tracker
+git pull --rebase
+git add -A
+git commit -m "変更内容"
+git push
+```
+
+`git pull` を忘れると `! [rejected] main -> main (fetch first)` で弾かれる。
+
 ### うまく取れない作品があったら
 
 `data/last-run.json` の中身を私に見せてください。
