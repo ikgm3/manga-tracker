@@ -110,6 +110,10 @@ function normImage(u) {
 const APP_ID = process.env.RAKUTEN_APP_ID;
 const ACCESS_KEY = process.env.RAKUTEN_ACCESS_KEY;
 
+// 楽天アプリ設定の「許可されたウェブサイト」に登録したドメインと一致させること
+const REFERER = process.env.RAKUTEN_REFERER || "https://ikgm3.github.io/manga-tracker/";
+const ORIGIN  = process.env.RAKUTEN_ORIGIN  || "https://ikgm3.github.io";
+
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 async function rakutenSearch(query, page = 1) {
@@ -127,12 +131,14 @@ async function rakutenSearch(query, page = 1) {
   for (let attempt = 1; attempt <= 4; attempt++) {
     let res;
     try {
-      // 楽天アプリ設定の「許可されたウェブサイト」に合わせて Referer を送る。
-      // GitHub Actions からのサーバーサイド実行には本来 Referer が付かないため明示する。
+      // 2026年の楽天API刷新以降、呼び出し元ドメインの検証が必須になった。
+      // サーバーサイド実行では Referer / Origin が自動で付かないため、
+      // 楽天アプリ設定の「許可されたウェブサイト」に登録した値を明示的に送る。
       res = await fetch(url, {
         headers: {
           "User-Agent": "manga-tracker/1.0",
-          "Referer": process.env.RAKUTEN_REFERER || "https://ikgm3.github.io/manga-tracker/"
+          "Referer": REFERER,
+          "Origin": ORIGIN
         }
       });
     } catch (e) {

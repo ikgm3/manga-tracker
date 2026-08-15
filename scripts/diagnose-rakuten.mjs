@@ -20,43 +20,40 @@ console.log();
 
 const QUERY = "アオのハコ";
 
+const REF = "https://ikgm3.github.io/manga-tracker/";
+const ORG = "https://ikgm3.github.io";
+const EP  = "https://openapi.rakuten.co.jp/services/api/BooksBook/Search/20170404";
+
 const patterns = [
   {
-    name: "A: openapi + 両方クエリ + Referer",
-    base: "https://openapi.rakuten.co.jp/services/api/BooksBook/Search/20170404",
+    name: "G: Referer + Origin の両方  ← 本命",
+    base: EP,
     params: { applicationId: APP_ID, accessKey: ACCESS_KEY },
-    headers: { Referer: "https://ikgm3.github.io/manga-tracker/" }
+    headers: { Referer: REF, Origin: ORG }
   },
   {
-    name: "B: openapi + 両方クエリ + Refererなし",
-    base: "https://openapi.rakuten.co.jp/services/api/BooksBook/Search/20170404",
+    name: "H: Origin のみ",
+    base: EP,
     params: { applicationId: APP_ID, accessKey: ACCESS_KEY },
-    headers: {}
+    headers: { Origin: ORG }
   },
   {
-    name: "C: openapi + accessKeyはヘッダ",
-    base: "https://openapi.rakuten.co.jp/services/api/BooksBook/Search/20170404",
-    params: { applicationId: APP_ID },
-    headers: { accessKey: ACCESS_KEY }
-  },
-  {
-    name: "D: 旧app.rakuten + applicationIdのみ",
-    base: "https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404",
-    params: { applicationId: APP_ID },
-    headers: {}
-  },
-  {
-    name: "E: 旧app.rakuten + 両方クエリ",
-    base: "https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404",
+    name: "I: Referer + Origin（Refererをドメインだけに）",
+    base: EP,
     params: { applicationId: APP_ID, accessKey: ACCESS_KEY },
-    headers: {}
+    headers: { Referer: ORG + "/", Origin: ORG }
   },
   {
-    name: "F: openapi + formatVersion指定なし",
-    base: "https://openapi.rakuten.co.jp/services/api/BooksBook/Search/20170404",
+    name: "J: Referer + Origin を github.com に",
+    base: EP,
     params: { applicationId: APP_ID, accessKey: ACCESS_KEY },
-    headers: {},
-    noFormatVersion: true
+    headers: { Referer: "https://github.com/ikgm3/manga-tracker", Origin: "https://github.com" }
+  },
+  {
+    name: "K: 参考・Referer のみ（前回失敗した形）",
+    base: EP,
+    params: { applicationId: APP_ID, accessKey: ACCESS_KEY },
+    headers: { Referer: REF }
   }
 ];
 
