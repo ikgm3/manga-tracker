@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#faf9f7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="マンガ">
+<title>マンガ新刊トラッカー</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%231f1d1a'/%3E%3Ctext x='50' y='68' font-size='56' text-anchor='middle' fill='%23fff'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+<style>
+:root { color-scheme: light; --pad: 14px; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  padding: max(12px, env(safe-area-inset-top)) var(--pad) calc(40px + env(safe-area-inset-bottom));
+  background: #faf9f7; color: #1f1d1a;
+  font-family: "Hiragino Sans", "Yu Gothic UI", "Meiryo", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 15px; line-height: 1.5;
+  overscroll-behavior-y: contain;
+}
+
+header { margin-bottom: 14px; }
+h1 { font-size: 19px; margin: 0 0 2px; letter-spacing: .01em; }
+.sub { color: #7a746b; font-size: 12px; }
+
+.cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+.card { background: #fff; border: 1px solid #e8e4dd; border-radius: 12px; padding: 11px 13px; }
+.card .n { font-size: 25px; font-weight: 650; line-height: 1.1; letter-spacing: -.01em; }
+.card .l { font-size: 11px; color: #7a746b; margin-top: 2px; }
+.card.hot { background: #fff6f2; border-color: #f3d5c7; }
+.card.hot .n { color: #c2410c; }
+.card.soon { background: #f3f8ff; border-color: #cfe0f5; }
+.card.soon .n { color: #1d4ed8; }
+
+.tabbar {
+  position: sticky; top: 0; z-index: 10;
+  margin: 0 calc(var(--pad) * -1) 12px;
+  padding: 8px var(--pad);
+  background: rgba(250,249,247,.92);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid #eeeae3;
+}
+.tabs { display: flex; gap: 6px; }
+.tab {
+  flex: 1; border: 1px solid #e2ddd5; background: #fff; color: #56514a;
+  padding: 9px 6px; border-radius: 999px; font-size: 13px; cursor: pointer;
+  font-family: inherit; touch-action: manipulation; white-space: nowrap;
+}
+.tab.on { background: #1f1d1a; color: #fff; border-color: #1f1d1a; font-weight: 600; }
+
+.list { display: flex; flex-direction: column; gap: 9px; }
+.row {
+  background: #fff; border: 1px solid #e8e4dd; border-radius: 12px;
+  padding: 13px 14px;
+}
+.row.unread { border-color: #f0c4ac; background: #fffaf7; }
+.row.soon { border-color: #cfe0f5; background: #f9fbff; }
+
+.tt { font-weight: 600; font-size: 15px; line-height: 1.35; }
+.meta { font-size: 11.5px; color: #8a837a; margin-top: 5px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+
+.badge { display: inline-block; font-size: 11px; padding: 2px 9px; border-radius: 999px; font-weight: 600; }
+.b-new { background: #fde8dc; color: #b03d0b; }
+.b-soon { background: #dce9fb; color: #1d4ed8; }
+.b-ok { background: #e7ece5; color: #56705a; }
+.b-wait { background: #eeebe5; color: #6e675e; }
+
+.bottom {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; margin-top: 12px; padding-top: 11px; border-top: 1px solid #f0ece5;
+}
+.info { font-size: 12px; color: #6e675e; line-height: 1.45; }
+.info b { font-variant-numeric: tabular-nums; }
+.info .gap { color: #c2410c; }
+.info .next { color: #948d83; font-size: 11.5px; }
+
+.counter { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.counter button {
+  width: 42px; height: 42px; border-radius: 12px; border: 1px solid #ddd7ce;
+  background: #fff; color: #2c2924; font-size: 21px; line-height: 1; cursor: pointer;
+  font-family: inherit; padding: 0; touch-action: manipulation;
+  display: flex; align-items: center; justify-content: center;
+}
+.counter button:active { background: #ebe7e0; transform: scale(.94); }
+.counter .v { min-width: 52px; text-align: center; font-variant-numeric: tabular-nums; font-size: 19px; font-weight: 650; }
+.counter .v small { font-size: 11px; font-weight: 500; color: #8a837a; margin-left: 1px; }
+
+.foot { margin-top: 26px; font-size: 11.5px; color: #918a80; border-top: 1px solid #eae6df; padding-top: 14px; }
+.foot button {
+  border: 1px solid #e2ddd5; background: #fff; color: #56514a; font-family: inherit;
+  padding: 9px 14px; border-radius: 9px; font-size: 12px; cursor: pointer;
+  margin-top: 9px; touch-action: manipulation;
+}
+.empty { padding: 34px 20px; text-align: center; color: #918a80; font-size: 13.5px; }
+
+@media (min-width: 700px) {
+  body { max-width: 780px; margin: 0 auto; }
+  .cards { grid-template-columns: repeat(4, 1fr); }
+  .row { display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center; }
+  .bottom { margin-top: 0; padding-top: 0; border: 0; flex-direction: row-reverse; gap: 16px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>マンガ新刊トラッカー</h1>
+  <div class="sub">最新刊データ: <span id="updated"></span> 時点</div>
+</header>
+
+<div class="cards">
+  <div class="card hot"><div class="n" id="c-unread">0</div><div class="l">未読の巻数</div></div>
+  <div class="card hot"><div class="n" id="c-titles">0</div><div class="l">新刊が出た作品</div></div>
+  <div class="card soon"><div class="n" id="c-soon">0</div><div class="l">60日以内に発売</div></div>
+  <div class="card"><div class="n" id="c-all">0</div><div class="l">登録作品</div></div>
+</div>
+
+<div class="tabbar">
+  <div class="tabs">
+    <button class="tab on" data-f="unread">未読あり</button>
+    <button class="tab" data-f="soon">発売間近</button>
+    <button class="tab" data-f="all">すべて</button>
+  </div>
+</div>
+
+<div class="list" id="list"></div>
+
+<div class="foot">
+  読んだら ＋ を押してください。記録はこの端末に保存され、次に開いても残ります。<br>
+  <button id="export">データを書き出す</button>
+  <button id="import">データを読み込む</button>
+  <button id="reset">既読データをリセット</button>
+</div>
+
+<script>
+// ==== 最新刊カタログ ====
+const UPDATED = "2026-08-14";
+const CATALOG = [
+  {t:"魔入りました！入間くん", init:49, latest:49, ld:"2026-06-08", next:50, nd:"2026-09-08", nc:"確定"},
+  {t:"弱虫ペダル", init:101, latest:101, ld:"2026-07-08", next:102, nd:"2026-09-08", nc:"予想"},
+  {t:"わたしの幸せな結婚（漫画）", init:6, latest:6, ld:"2026-03-12", next:7, nd:null, nc:"未定"},
+  {t:"薫る花は凛と咲く", init:23, latest:23, ld:"2026-06-09", next:24, nd:"2026-09-09", nc:"確定"},
+  {t:"夏目友人帳", init:33, latest:33, ld:"2026-04-03", next:34, nd:null, nc:"未定"},
+  {t:"ワンダンス", init:15, latest:15, ld:"2025-12-23", next:16, nd:null, nc:"未定"},
+  {t:"ダンス・ダンス・ダンスール", init:32, latest:32, ld:"2026-04-10", next:33, nd:"2026-09-11", nc:"確定"},
+  {t:"ブルーピリオド", init:19, latest:19, ld:"2026-05-22", next:20, nd:"2026-11-20", nc:"予想"},
+  {t:"アオのハコ", init:26, latest:26, ld:"2026-07-03", next:27, nd:"2026-10-02", nc:"確定", note:"最終28巻は12月発売予定"},
+  {t:"メダリスト", init:15, latest:15, ld:"2026-07-22", next:16, nd:null, nc:"未定"},
+  {t:"絢爛たるグランドセーヌ", init:30, latest:30, ld:"2026-07-17", next:31, nd:"2026-12-16", nc:"予想"},
+  {t:"お隣の天使様（漫画版）", init:7, latest:7, ld:"2026-06-05", next:8, nd:null, nc:"未定", note:"スピンオフ「after the rain」は3巻まで"},
+  {t:"ふつつかな悪女ではございますが（漫画）", init:10, latest:10, ld:null, next:11, nd:"2026-09-30", nc:"確定"},
+  {t:"月刊少女野崎くん", init:17, latest:18, ld:"2026-08-10", next:19, nd:null, nc:"未定"},
+  {t:"とんでもスキルで異世界放浪メシ（漫画）", init:10, latest:11, ld:"2025-07-25", next:12, nd:"2026-12-23", nc:"予想"},
+  {t:"メイドインアビス", init:14, latest:14, ld:"2025-08-08", next:15, nd:"2026-08-26", nc:"確定", note:"電子版は8/17先行配信"},
+  {t:"小林さんちのメイドラゴン", init:19, latest:19, ld:"2026-04-09", next:20, nd:"2026-09-03", nc:"予想"},
+  {t:"アンサングシンデレラ 病院薬剤師 葵みどり", init:15, latest:15, ld:"2025-07-18", next:16, nd:null, nc:"未定", note:"完結（全15巻・15巻が最終巻）"},
+  {t:"フラジャイル 病理医岸京一郎の所見", init:31, latest:31, ld:"2026-03-23", next:32, nd:"2026-09-18", nc:"確定"},
+  {t:"死役所", init:28, latest:28, ld:"2025-07-09", next:29, nd:null, nc:"未定"},
+  {t:"光が死んだ夏", init:9, latest:9, ld:"2026-06-04", next:10, nd:"2026-11-10", nc:"予想"},
+  {t:"スーパーの裏でヤニ吸うふたり", init:8, latest:9, ld:"2026-07-24", next:10, nd:null, nc:"未定"},
+  {t:"星旅少年 -Planetarium ghost travel-", init:6, latest:6, ld:"2026-01-23", next:7, nd:null, nc:"未定"},
+  {t:"鴻池剛と猫のぽんた ニャアアアン！", init:4, latest:4, ld:"2026-02-26", next:5, nd:null, nc:"未定"},
+  {t:"同居人はひざ、時々、頭のうえ。", init:12, latest:12, ld:"2025-12-15", next:13, nd:"2026-12-17", nc:"予想"},
+  {t:"おじさまと猫", init:17, latest:17, ld:"2026-06-11", next:18, nd:"2026-11-11", nc:"予想"},
+  {t:"夜は猫といっしょ", init:8, latest:9, ld:"2026-07-08", next:10, nd:null, nc:"未定"},
+  {t:"うちの猫がまた変なことしてる。", init:8, latest:8, ld:"2024-09-19", next:9, nd:null, nc:"未定", note:"コミックエッセイ・刊行間隔は不定期"},
+  {t:"魔男のイチ", init:9, latest:9, ld:"2026-07-03", next:10, nd:"2026-10-02", nc:"予想"},
+  {t:"とんがり帽子のアトリエ", init:16, latest:16, ld:"2026-04-23", next:17, nd:"2026-09-23", nc:"予想"}
+];
+// ==== ここまで ====
+
+const KEY = "manga-tracker-read-v2";
+// 実際の今日の日付で残り日数を計算（スマホで使うため）
+const TODAY = (() => { const d = new Date(); d.setHours(0,0,0,0); return d; })();
+let store = {};
+try { store = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch(e) { store = {}; }
+let filter = "unread";
+
+const read = m => (m.t in store) ? store[m.t] : m.init;
+const days = d => d ? Math.round((new Date(d+"T00:00:00") - TODAY) / 86400000) : null;
+const fmt = d => d ? (+d.slice(5,7)) + "/" + (+d.slice(8,10)) + "（" + d.slice(2,4) + "年）" : "未定";
+
+function state(m) {
+  if (read(m) < m.latest) return "unread";
+  const dn = days(m.nd);
+  if (dn !== null && dn >= 0 && dn <= 60) return "soon";
+  return "ok";
+}
+
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch(e) {} }
+
+function render() {
+  const list = document.getElementById("list");
+  const rows = CATALOG.map(m => ({m, s: state(m), gap: Math.max(0, m.latest - read(m))}));
+
+  document.getElementById("c-unread").textContent = rows.reduce((a,r)=>a+r.gap, 0);
+  document.getElementById("c-titles").textContent = rows.filter(r=>r.gap>0).length;
+  document.getElementById("c-soon").textContent = rows.filter(r=>r.s==="soon").length;
+  document.getElementById("c-all").textContent = CATALOG.length;
+
+  let show = rows;
+  if (filter === "unread") show = rows.filter(r => r.gap > 0);
+  else if (filter === "soon") show = rows.filter(r => r.m.nd && days(r.m.nd) >= 0);
+
+  const rank = {unread:0, soon:1, ok:2};
+  if (filter === "soon") {
+    show.sort((a,b) => a.m.nd.localeCompare(b.m.nd));
+  } else {
+    show.sort((a,b) => {
+      const d = rank[a.s] - rank[b.s];
+      if (d) return d;
+      if (a.s === "soon") return a.m.nd.localeCompare(b.m.nd);
+      if (a.s === "unread") return b.gap - a.gap;
+      return (b.m.ld||"").localeCompare(a.m.ld||"");
+    });
+  }
+
+  if (!show.length) {
+    list.innerHTML = '<div class="empty">' +
+      (filter === "soon" ? "発売日が判明している次巻はありません。"
+       : filter === "unread" ? "未読はありません。全部追いつけています 🎉"
+       : "作品がありません。") + '</div>';
+    return;
+  }
+
+  list.innerHTML = show.map(({m, s, gap}) => {
+    const r = read(m), dn = days(m.nd);
+    let badge = '<span class="badge b-ok">最新</span>';
+    if (gap > 0) badge = '<span class="badge b-new">未読 ' + gap + '冊</span>';
+    else if (dn !== null && dn >= 0) {
+      badge = '<span class="badge ' + (s === "soon" ? 'b-soon' : 'b-wait') + '">' +
+              (dn === 0 ? '本日発売' : 'あと' + dn + '日') + '</span>';
+    }
+    const nextLine = m.nd
+      ? '次: ' + m.next + '巻 ' + fmt(m.nd) + (m.nc === "予想" ? " 予想" : " 予定")
+      : '次: ' + m.next + '巻 発売日未定';
+
+    return '<div class="row ' + (gap>0 ? 'unread' : s==='soon' ? 'soon' : '') + '">' +
+      '<div>' +
+        '<div class="tt">' + esc(m.t) + '</div>' +
+        '<div class="meta">' + badge + (m.note ? '<span>' + esc(m.note) + '</span>' : '') + '</div>' +
+      '</div>' +
+      '<div class="bottom">' +
+        '<div class="info">既刊 <b' + (gap>0 ? ' class="gap"' : '') + '>' + m.latest + '巻</b>' +
+        (m.ld ? ' ・ ' + fmt(m.ld) : '') +
+        '<div class="next">' + nextLine + '</div></div>' +
+        '<div class="counter">' +
+          '<button data-d="-1" data-t="' + esc(m.t) + '" aria-label="減らす">−</button>' +
+          '<span class="v">' + r + '<small>巻</small></span>' +
+          '<button data-d="1" data-t="' + esc(m.t) + '" aria-label="増やす">＋</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join("");
+}
+
+document.getElementById("list").addEventListener("click", e => {
+  const b = e.target.closest("button[data-d]");
+  if (!b) return;
+  const m = CATALOG.find(x => x.t === b.dataset.t);
+  if (!m) return;
+  store[m.t] = Math.max(0, read(m) + (+b.dataset.d));
+  save(); render();
+});
+
+document.querySelectorAll(".tab").forEach(tb => tb.addEventListener("click", () => {
+  document.querySelectorAll(".tab").forEach(x => x.classList.remove("on"));
+  tb.classList.add("on");
+  filter = tb.dataset.f;
+  render();
+  window.scrollTo({top: 0, behavior: "smooth"});
+}));
+
+document.getElementById("reset").addEventListener("click", () => {
+  if (!confirm("既読巻数を初期状態に戻します。よろしいですか？")) return;
+  store = {}; save(); render();
+});
+
+document.getElementById("export").addEventListener("click", () => {
+  const data = {};
+  CATALOG.forEach(m => { data[m.t] = read(m); });
+  prompt("この内容をコピーして保管してください。別の端末では「データを読み込む」に貼り付けます。", JSON.stringify(data));
+});
+
+document.getElementById("import").addEventListener("click", () => {
+  const s = prompt("書き出したデータを貼り付けてください。");
+  if (!s) return;
+  try {
+    const data = JSON.parse(s);
+    if (typeof data !== "object" || data === null || Array.isArray(data)) throw new Error("形式が違います");
+    let n = 0;
+    CATALOG.forEach(m => {
+      const v = data[m.t];
+      if (typeof v === "number" && isFinite(v) && v >= 0) { store[m.t] = Math.floor(v); n++; }
+    });
+    save(); render();
+    alert(n + "作品の既読巻数を読み込みました。");
+  } catch (e) {
+    alert("読み込めませんでした: " + e.message);
+  }
+});
+
+document.getElementById("updated").textContent = UPDATED;
+render();
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+}
+</script>
+</body>
+</html>
