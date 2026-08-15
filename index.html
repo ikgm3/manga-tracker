@@ -108,9 +108,24 @@ h1 { font-size: 19px; font-weight: 700; margin: 0; letter-spacing: .015em; }
 .row {
   background: var(--surface); border: 1px solid var(--line); border-radius: 13px;
   padding: 13px 14px;
+  display: flex; gap: 12px; align-items: flex-start;
 }
 .row.unread { border-color: var(--accent-line); background: var(--accent-tint); }
 .row.soon   { border-color: var(--soon-line);  background: var(--soon-tint); }
+.main { flex: 1; min-width: 0; }
+
+.thumb {
+  flex: 0 0 auto; width: 46px; aspect-ratio: 2 / 3;
+  border-radius: 5px; overflow: hidden; position: relative;
+  background: var(--surface-2);
+  box-shadow: 0 1px 3px rgba(28,22,16,.18);
+}
+.thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb .ph {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(150deg, hsl(var(--h) 26% 52%), hsl(var(--h2) 30% 32%));
+  color: #fff; font-size: 14px; font-weight: 700; letter-spacing: -.02em;
+}
 
 .tt { font-weight: 650; font-size: 15px; line-height: 1.35; letter-spacing: .01em; }
 .meta { font-size: 11.5px; color: var(--muted); margin-top: 6px; display: flex; gap: 7px; flex-wrap: wrap; align-items: center; }
@@ -151,10 +166,14 @@ h1 { font-size: 19px; font-weight: 700; margin: 0; letter-spacing: .015em; }
   padding: 9px 14px; border-radius: 9px; font-size: 11.5px; cursor: pointer; touch-action: manipulation;
 }
 .foot button:active { background: var(--surface-2); }
+.foot a { color: var(--soon); text-decoration: none; }
+.credit { margin-top: 12px; font-size: 10.5px; opacity: .75; }
 
 @media (min-width: 700px) {
-  body { max-width: 800px; margin: 0 auto; }
-  .row { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; }
+  body { max-width: 840px; margin: 0 auto; }
+  .row { align-items: center; }
+  .thumb { width: 54px; }
+  .main { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; }
   .bottom { margin-top: 0; padding-top: 0; border: 0; flex-direction: row-reverse; gap: 16px; }
 }
 </style>
@@ -185,11 +204,14 @@ h1 { font-size: 19px; font-weight: 700; margin: 0; letter-spacing: .015em; }
 
 <div class="foot">
   読んだら ＋ を押してください。記録はこの端末に保存され、次に開いても残ります。<br>
-  作品の追加・削除はチャットから依頼してください。
+  作品を追加するには <a href="https://github.com/ikgm3/manga-tracker/issues/new?template=add-title.yml" target="_blank" rel="noopener">こちらのフォーム</a> から申請してください。
   <div class="btns">
     <button id="export">データを書き出す</button>
     <button id="import">データを読み込む</button>
     <button id="reset">既読をリセット</button>
+  </div>
+  <div class="credit">
+    書影・発売日: <a href="https://webservice.rakuten.co.jp/" target="_blank" rel="noopener">Supported by 楽天ウェブサービス</a>
   </div>
 </div>
 
@@ -241,6 +263,13 @@ const days = d => d ? Math.round((new Date(d+"T00:00:00") - TODAY) / 86400000) :
 const fmt  = d => d ? (+d.slice(5,7)) + "/" + (+d.slice(8,10)) + "（" + d.slice(2,4) + "年）" : "未定";
 const esc  = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch(e) {} };
+
+/** 表紙が無い作品用に、作品名から安定した色を作る */
+function hueOf(t) {
+  let h = 0;
+  for (let i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) >>> 0;
+  return h % 360;
+}
 
 function state(m) {
   if (read(m) < m.latest) return "unread";
@@ -295,7 +324,16 @@ function render() {
       ? '次: ' + m.next + '巻 ' + fmt(m.nd) + (m.nc === "予想" ? " 予想" : " 予定")
       : '次: ' + m.next + '巻 発売日未定';
 
+    const h = hueOf(m.t);
+    const thumb = '<div class="thumb" style="--h:' + h + ';--h2:' + ((h + 26) % 360) + '">' +
+      '<div class="ph">' + m.latest + '</div>' +
+      (m.img ? '<img src="' + esc(m.img) + '" alt="" loading="lazy" decoding="async" ' +
+               'referrerpolicy="no-referrer" onerror="this.remove()">' : '') +
+    '</div>';
+
     return '<div class="row ' + (gap>0 ? 'unread' : s==='soon' ? 'soon' : '') + '">' +
+      thumb +
+      '<div class="main">' +
       '<div>' +
         '<div class="tt">' + esc(m.t) + '</div>' +
         '<div class="meta">' + badge + (m.note ? '<span>' + esc(m.note) + '</span>' : '') + '</div>' +
@@ -309,6 +347,7 @@ function render() {
           '<span class="v">' + r + '<small>巻</small></span>' +
           '<button data-d="1" data-t="' + esc(m.t) + '" aria-label="増やす">＋</button>' +
         '</div>' +
+      '</div>' +
       '</div>' +
     '</div>';
   }).join("");

@@ -1,0 +1,438 @@
+{
+  "ranAt": "2026-08-15T22:52:31.697Z",
+  "today": "2026-08-16",
+  "newVolumes": [],
+  "titles": [
+    {
+      "t": "魔入りました！入間くん",
+      "status": "no-match",
+      "matched": 0,
+      "latest": 49,
+      "ld": "2026-06-08",
+      "next": 50,
+      "nd": "2026-09-08",
+      "nc": "確定",
+      "before": {
+        "latest": 49,
+        "nd": "2026-09-08"
+      }
+    },
+    {
+      "t": "弱虫ペダル",
+      "status": "ok",
+      "matched": 2,
+      "latest": 101,
+      "ld": "2026-07-08",
+      "next": 102,
+      "nd": "2026-09-08",
+      "nc": "確定",
+      "before": {
+        "latest": 101,
+        "nd": "2026-09-08"
+      }
+    },
+    {
+      "t": "わたしの幸せな結婚（漫画）",
+      "status": "no-match",
+      "matched": 0,
+      "latest": 6,
+      "ld": "2026-03-12",
+      "next": 7,
+      "nd": null,
+      "nc": "未定",
+      "before": {
+        "latest": 6,
+        "nd": null
+      }
+    },
+    {
+      "t": "薫る花は凛と咲く",
+      "status": "ok",
+      "matched": 2,
+      "latest": 23,
+      "ld": "2026-06-09",
+      "next": 24,
+      "nd": "2026-09-09",
+      "nc": "確定",
+      "before": {
+        "latest": 23,
+        "nd": "2026-09-09"
+      }
+    },
+    {
+      "t": "夏目友人帳",
+      "status": "regression-ignored",
+      "matched": 1,
+      "latest": 33,
+      "ld": "2026-04-03",
+      "next": 34,
+      "nd": null,
+      "nc": "未定",
+      "before": {
+        "latest": 33,
+        "nd": null
+      }
+    },
+    {
+      "t": "ワンダンス",
+      "status": "no-match",
+      "matched": 0,
+      "latest": 15,
+      "ld": "2025-12-23",
+      "next": 16,
+      "nd": null,
+      "nc": "未定",
+      "before": {
+        "latest": 15,
+        "nd": null
+      }
+    },
+    {
+      "t": "ダンス・ダンス・ダンスール",
+      "status": "no-match",
+      "matched": 0,
+      "latest": 32,
+      "ld": "2026-04-10",
+      "next": 33,
+      "nd": "2026-09-11",
+      "nc": "確定",
+      "before": {
+        "latest": 32,
+        "nd": "2026-09-11"
+      }
+    },
+    {
+      "t": "ブルーピリオド",
+      "status": "no-match",
+      "matched": 0,
+      "latest": 19,
+      "ld": "2026-05-22",
+      "next": 20,
+      "nd": "2026-11-20",
+      "nc": "予想",
+      "before": {
+        "latest": 19,
+        "nd": "2026-11-20"
+      }
+    },
+    {
+      "t": "アオのハコ",
+      "status": "ok",
+      "matched": 3,
+      "latest": 26,
+      "ld": "2026-07-03",
+      "next": 27,
+      "nd": "2026-10-02",
+      "nc": "確定",
+      "before": {
+        "latest": 26,
+        "nd": "2026-10-02"
+      }
+    },
+    {
+      "t": "メダリスト",
+      "status": "ok",
+      "matched": 2,
+      "latest": 15,
+      "ld": "2026-07-22",
+      "next": 16,
+      "nd": "2026-12-22",
+      "nc": "確定",
+      "before": {
+        "latest": 15,
+        "nd": null
+      }
+    },
+    {
+      "t": "絢爛たるグランドセーヌ",
+      "status": "no-match",
+      "matched": 0,
+      "latest": 30,
+      "ld": "2026-07-17",
+      "next": 31,
+      "nd": "2026-12-16",
+      "nc": "予想",
+      "before": {
+        "latest": 30,
+        "nd": "2026-12-16"
+      }
+    },
+    {
+      "t": "お隣の天使様（漫画版）",
+      "status": "ok",
+      "matched": 1,
+      "latest": 7,
+      "ld": "2026-06-05",
+      "next": 8,
+      "nd": null,
+      "nc": "未定",
+      "before": {
+        "latest": 7,
+        "nd": null
+      }
+    },
+    {
+      "t": "ふつつかな悪女ではございますが（漫画）",
+      "status": "no-match",
+      "matched": 0,
+      "latest": 10,
+      "ld": "2026-03-31",
+      "next": 11,
+      "nd": "2026-09-30",
+      "nc": "確定",
+      "before": {
+        "latest": 10,
+        "nd": "2026-09-30"
+      }
+    },
+    {
+      "t": "月刊少女野崎くん",
+      "status": "no-match",
+      "matched": 0,
+      "latest": 18,
+      "ld": "2026-08-10",
+      "next": 19,
+      "nd": null,
+      "nc": "未定",
+      "before": {
+        "latest": 18,
+        "nd": null
+      }
+    },
+    {
+      "t": "とんでもスキルで異世界放浪メシ（漫画）",
+      "status": "no-match",
+      "matched": 0,
+      "latest": 11,
+      "ld": "2025-07-25",
+      "next": 12,
+      "nd": "2026-12-23",
+      "nc": "予想",
+      "before": {
+        "latest": 11,
+        "nd": "2026-12-23"
+      }
+    },
+    {
+      "t": "メイドインアビス",
+      "status": "only-upcoming",
+      "matched": 1,
+      "latest": 14,
+      "ld": "2025-08-08",
+      "next": 15,
+      "nd": "2026-08-26",
+      "nc": "確定",
+      "before": {
+        "latest": 14,
+        "nd": "2026-08-26"
+      }
+    },
+    {
+      "t": "小林さんちのメイドラゴン",
+      "status": "ok",
+      "matched": 2,
+      "latest": 19,
+      "ld": "2026-04-09",
+      "next": 20,
+      "nd": "2026-09-05",
+      "nc": "予想",
+      "before": {
+        "latest": 19,
+        "nd": "2026-09-03"
+      }
+    },
+    {
+      "t": "アンサングシンデレラ 病院薬剤師 葵みどり",
+      "status": "complete",
+      "matched": 0,
+      "latest": 15,
+      "ld": "2025-07-18",
+      "next": 16,
+      "nd": null,
+      "nc": "未定",
+      "before": {
+        "latest": 15,
+        "nd": null
+      }
+    },
+    {
+      "t": "フラジャイル 病理医岸京一郎の所見",
+      "status": "ok",
+      "matched": 2,
+      "latest": 31,
+      "ld": "2026-03-23",
+      "next": 32,
+      "nd": "2026-09-18",
+      "nc": "確定",
+      "before": {
+        "latest": 31,
+        "nd": "2026-09-18"
+      }
+    },
+    {
+      "t": "死役所",
+      "status": "ok",
+      "matched": 1,
+      "latest": 28,
+      "ld": "2025-07-09",
+      "next": 29,
+      "nd": null,
+      "nc": "未定",
+      "before": {
+        "latest": 28,
+        "nd": null
+      }
+    },
+    {
+      "t": "光が死んだ夏",
+      "status": "no-match",
+      "matched": 0,
+      "latest": 9,
+      "ld": "2026-06-04",
+      "next": 10,
+      "nd": "2026-11-10",
+      "nc": "予想",
+      "before": {
+        "latest": 9,
+        "nd": "2026-11-10"
+      }
+    },
+    {
+      "t": "スーパーの裏でヤニ吸うふたり",
+      "status": "no-match",
+      "matched": 0,
+      "latest": 9,
+      "ld": "2026-07-24",
+      "next": 10,
+      "nd": null,
+      "nc": "未定",
+      "before": {
+        "latest": 9,
+        "nd": null
+      }
+    },
+    {
+      "t": "星旅少年 -Planetarium ghost travel-",
+      "status": "ok",
+      "matched": 1,
+      "latest": 6,
+      "ld": "2026-01-23",
+      "next": 7,
+      "nd": null,
+      "nc": "未定",
+      "before": {
+        "latest": 6,
+        "nd": null
+      }
+    },
+    {
+      "t": "鴻池剛と猫のぽんた ニャアアアン！",
+      "status": "ok",
+      "matched": 1,
+      "latest": 4,
+      "ld": "2026-02-26",
+      "next": 5,
+      "nd": null,
+      "nc": "未定",
+      "before": {
+        "latest": 4,
+        "nd": null
+      }
+    },
+    {
+      "t": "同居人はひざ、時々、頭のうえ。",
+      "status": "no-match",
+      "matched": 0,
+      "latest": 12,
+      "ld": "2025-12-15",
+      "next": 13,
+      "nd": "2026-12-17",
+      "nc": "予想",
+      "before": {
+        "latest": 12,
+        "nd": "2026-12-17"
+      }
+    },
+    {
+      "t": "おじさまと猫",
+      "status": "no-match",
+      "matched": 0,
+      "latest": 17,
+      "ld": "2026-06-11",
+      "next": 18,
+      "nd": "2026-11-11",
+      "nc": "予想",
+      "before": {
+        "latest": 17,
+        "nd": "2026-11-11"
+      }
+    },
+    {
+      "t": "夜は猫といっしょ",
+      "status": "no-match",
+      "matched": 0,
+      "latest": 9,
+      "ld": "2026-07-08",
+      "next": 10,
+      "nd": null,
+      "nc": "未定",
+      "before": {
+        "latest": 9,
+        "nd": null
+      }
+    },
+    {
+      "t": "うちの猫がまた変なことしてる。",
+      "status": "no-match",
+      "matched": 0,
+      "latest": 8,
+      "ld": "2024-09-19",
+      "next": 9,
+      "nd": null,
+      "nc": "未定",
+      "before": {
+        "latest": 8,
+        "nd": null
+      }
+    },
+    {
+      "t": "魔男のイチ",
+      "status": "no-match",
+      "matched": 0,
+      "latest": 9,
+      "ld": "2026-07-03",
+      "next": 10,
+      "nd": "2026-10-02",
+      "nc": "予想",
+      "before": {
+        "latest": 9,
+        "nd": "2026-10-02"
+      }
+    },
+    {
+      "t": "とんがり帽子のアトリエ",
+      "status": "no-match",
+      "matched": 0,
+      "latest": 16,
+      "ld": "2026-04-23",
+      "next": 17,
+      "nd": "2026-09-23",
+      "nc": "予想",
+      "before": {
+        "latest": 16,
+        "nd": "2026-09-23"
+      }
+    },
+    {
+      "t": "葬送のフリーレン",
+      "status": "ok",
+      "matched": 2,
+      "latest": 14,
+      "ld": "2026-06-18",
+      "next": 15,
+      "nd": "2026-09-18",
+      "nc": "確定",
+      "before": null
+    }
+  ]
+}

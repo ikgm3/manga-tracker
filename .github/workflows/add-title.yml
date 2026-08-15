@@ -1,0 +1,101 @@
+name: 作品を追加
+
+on:
+  issues:
+    types: [opened, reopened]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: update-catalog      # カタログ更新と同時に走らせない
+  cancel-in-progress: false
+
+jobs:
+  add:
+    # 「作品を追加」テンプレートから作られたIssueだけを処理する
+    if: contains(join(github.event.issue.labels.*.name, ','), 'add-title')
+    runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Tokyo
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: watchlist に追加
+        id: add
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: node scripts/add-title.mjs
+
+      - name: 追加できなかったことを返信
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner, repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: "### 追加できませんでした\n\n入力内容を読み取れませんでした。"
+                  + "実行ログを確認してください。\n\n"
+                  + `[ログを見る](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`
+            });
+
+      - name: カタログを更新
+        env:
+          RAKUTEN_APP_ID: ${{ secrets.RAKUTEN_APP_ID }}
+          RAKUTEN_ACCESS_KEY: ${{ secrets.RAKUTEN_ACCESS_KEY }}
+        run: node scripts/update-catalog.mjs | tee /tmp/run.log
+
+      - name: 変更をコミット
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "変更なし"; exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html data/watchlist.json data/last-run.json
+          git commit -m "feat: 作品を追加 (#${{ github.event.issue.number }})"
+          git push
+
+      - name: 結果を返信してIssueを閉じる
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const wl = JSON.parse(fs.readFileSync('data/watchlist.json', 'utf8'));
+            const added = wl.titles[wl.titles.length - 1];
+            let row = null;
+            try {
+              const last = JSON.parse(fs.readFileSync('data/last-run.json', 'utf8'));
+              row = last.titles.find(x => x.t === added.t);
+            } catch (e) {}
+
+            const detail = row
+              ? `| 項目 | 値 |\n|---|---|\n`
+                + `| 既刊最新巻 | ${row.latest}巻 |\n`
+                + `| 発売日 | ${row.ld || "不明"} |\n`
+                + `| 次巻 | ${row.next}巻 |\n`
+                + `| 発売予定 | ${row.nd || "未定"} |\n`
+                + `| 判定 | \`${row.status}\` |\n`
+              : "カタログ更新の結果を取得できませんでした。";
+
+            const warn = row && row.status !== "ok"
+              ? "\n\n判定が `ok` ではありません。楽天で作品を特定できていない可能性があります。"
+                + "Issueを再オープンする前に、検索語や出版社を変えて新しいIssueを立ててみてください。"
+              : "";
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner, repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `### 「${added.t}」を追加しました\n\n${detail}${warn}\n\n`
+                  + `数分後にアプリへ反映されます。`
+            });
+            await github.rest.issues.update({
+              owner: context.repo.owner, repo: context.repo.repo,
+              issue_number: context.issue.number, state: "closed"
+            });
