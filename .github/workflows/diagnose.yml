@@ -2,6 +2,18 @@ name: 楽天API診断
 
 on:
   workflow_dispatch:
+    inputs:
+      mode:
+        description: "調べる内容"
+        type: choice
+        default: inspect
+        options:
+          - inspect      # 特定作品が何を拾っているか調べる
+          - connection   # 接続方法を試す
+      titles:
+        description: "調べる作品名（カンマ区切り。空欄なら誤検出の報告があった作品）"
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -14,8 +26,24 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - name: 接続パターンを試す
+
+      - name: 接続方法を試す
+        if: inputs.mode == 'connection'
         env:
           RAKUTEN_APP_ID: ${{ secrets.RAKUTEN_APP_ID }}
           RAKUTEN_ACCESS_KEY: ${{ secrets.RAKUTEN_ACCESS_KEY }}
         run: node scripts/diagnose-rakuten.mjs
+
+      - name: 作品ごとの取得内容を調べる
+        if: inputs.mode == 'inspect'
+        env:
+          RAKUTEN_APP_ID: ${{ secrets.RAKUTEN_APP_ID }}
+          RAKUTEN_ACCESS_KEY: ${{ secrets.RAKUTEN_ACCESS_KEY }}
+          TITLES: ${{ inputs.titles }}
+        run: |
+          if [ -n "$TITLES" ]; then
+            IFS=',' read -ra ARR <<< "$TITLES"
+            node scripts/inspect-title.mjs "${ARR[@]}"
+          else
+            node scripts/inspect-title.mjs
+          fi

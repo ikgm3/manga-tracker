@@ -250,10 +250,15 @@ async function resolveTitle(entry, globalExclude, prev, mockItems) {
   const row = { ...base };
   let status = "ok";
 
+  // 巻数が一気に跳ね上がったら誤検出を疑う（単話版・別シリーズの混入など）
+  const maxJump = entry.maxJump ?? 3;
+
   if (released.length) {
     const top = released[0];
     if (top.vol < base.latest) {
       status = "regression-ignored";   // API側の欠落。既存値を守る
+    } else if (base.latest > 0 && top.vol > base.latest + maxJump) {
+      status = "suspicious-jump";      // 既存値を守り、人間の確認に回す
     } else {
       row.latest = top.vol;
       row.ld = top.date;
