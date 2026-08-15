@@ -147,7 +147,8 @@ async function rakutenSearch(query, page = 1) {
       await sleep(2500 * attempt);
       continue;
     }
-    throw new Error(`HTTP ${res.status} for "${query}": ${(await res.text()).slice(0, 200)}`);
+    const body = (await res.text()).replace(/\s+/g, " ").slice(0, 300);
+    throw new Error(`HTTP ${res.status} for "${query}": ${body}`);
   }
 }
 
