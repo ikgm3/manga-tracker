@@ -26,10 +26,15 @@
   --muted: #8b847a;
   --accent: #c2410c;
   --accent-bg: #fdeadf;
+  --accent-line: #f0c4ac;
+  --accent-tint: #fffaf7;
   --soon: #1d4ed8;
   --soon-bg: #e0eafc;
-  --shadow: 0 1px 2px rgba(28,22,16,.06), 0 6px 16px rgba(28,22,16,.07);
-  --shadow-lg: 0 8px 40px rgba(28,22,16,.18);
+  --soon-line: #cfe0f5;
+  --soon-tint: #f9fbff;
+  --ok-bg: #e7ece5;
+  --ok: #56705a;
+  --shadow: 0 1px 2px rgba(28,22,16,.05), 0 4px 12px rgba(28,22,16,.05);
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -42,17 +47,22 @@
     --muted: #9b938a;
     --accent: #ff8f63;
     --accent-bg: #40241a;
+    --accent-line: #5b3324;
+    --accent-tint: #241a15;
     --soon: #93b4f8;
     --soon-bg: #1e2c47;
-    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 18px rgba(0,0,0,.35);
-    --shadow-lg: 0 10px 48px rgba(0,0,0,.6);
+    --soon-line: #2b3d5e;
+    --soon-tint: #171b23;
+    --ok-bg: #26302a;
+    --ok: #9dbba4;
+    --shadow: 0 1px 2px rgba(0,0,0,.35), 0 4px 14px rgba(0,0,0,.3);
   }
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
-  padding: max(14px, env(safe-area-inset-top)) var(--pad) calc(56px + env(safe-area-inset-bottom));
+  padding: max(14px, env(safe-area-inset-top)) var(--pad) calc(48px + env(safe-area-inset-bottom));
   background: var(--bg); color: var(--text);
   font-family: "Hiragino Sans", "Yu Gothic UI", "Meiryo", -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 15px; line-height: 1.5;
@@ -80,15 +90,12 @@ h1 { font-size: 19px; font-weight: 700; margin: 0; letter-spacing: .015em; }
 
 .tabbar {
   position: sticky; top: 0; z-index: 20;
-  margin: 0 calc(var(--pad) * -1) 14px;
+  margin: 0 calc(var(--pad) * -1) 13px;
   padding: 9px var(--pad) 10px;
   background: var(--bg-blur);
   backdrop-filter: saturate(180%) blur(12px); -webkit-backdrop-filter: saturate(180%) blur(12px);
 }
-.tabs {
-  display: flex; gap: 3px; padding: 3px;
-  background: var(--surface-2); border-radius: 12px;
-}
+.tabs { display: flex; gap: 3px; padding: 3px; background: var(--surface-2); border-radius: 12px; }
 .tab {
   flex: 1; border: 0; background: transparent; color: var(--muted);
   padding: 8px 4px; border-radius: 9px; font-size: 13px; font-weight: 600;
@@ -97,116 +104,59 @@ h1 { font-size: 19px; font-weight: 700; margin: 0; letter-spacing: .015em; }
 }
 .tab.on { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
 
-.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px 11px; }
-@media (min-width: 520px) { .grid { grid-template-columns: repeat(4, 1fr); gap: 18px 14px; } }
-@media (min-width: 760px) { body { max-width: 940px; margin: 0 auto; } .grid { grid-template-columns: repeat(6, 1fr); } }
-
-.card { cursor: pointer; position: relative; }
-.card:active .cover { transform: scale(.965); }
-
-.cover {
-  position: relative; width: 100%; aspect-ratio: 2 / 3;
-  border-radius: 9px; overflow: hidden;
-  background: var(--surface-2); box-shadow: var(--shadow);
-  transition: transform .16s ease;
+.list { display: flex; flex-direction: column; gap: 9px; }
+.row {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 13px;
+  padding: 13px 14px;
 }
-.cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
-.ph {
-  position: absolute; inset: 0; display: flex; flex-direction: column;
-  justify-content: space-between; padding: 9px 8px;
-  background: linear-gradient(155deg, hsl(var(--h) 30% 50%), hsl(var(--h2) 34% 27%));
-  color: #fff;
-}
-.ph .t { font-size: 10.5px; font-weight: 600; line-height: 1.3; letter-spacing: .01em;
-  display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
-  text-shadow: 0 1px 3px rgba(0,0,0,.3); }
-.ph .v { font-size: 22px; font-weight: 700; text-align: right; opacity: .92; letter-spacing: -.02em; }
-.ph .v small { font-size: 11px; font-weight: 500; }
+.row.unread { border-color: var(--accent-line); background: var(--accent-tint); }
+.row.soon   { border-color: var(--soon-line);  background: var(--soon-tint); }
 
-.tag {
-  position: absolute; top: 6px; left: 6px; z-index: 2;
-  font-size: 10.5px; font-weight: 700; padding: 3px 7px; border-radius: 7px;
-  letter-spacing: .02em; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-  box-shadow: 0 1px 5px rgba(0,0,0,.22);
-}
-.t-new { background: #e2510b; color: #fff; }
-.t-soon { background: rgba(255,255,255,.94); color: #14387f; }
-@media (prefers-color-scheme: dark) { .t-soon { background: rgba(28,26,24,.9); color: #a9c4fb; } }
+.tt { font-weight: 650; font-size: 15px; line-height: 1.35; letter-spacing: .01em; }
+.meta { font-size: 11.5px; color: var(--muted); margin-top: 6px; display: flex; gap: 7px; flex-wrap: wrap; align-items: center; }
 
-.plus {
-  position: absolute; right: 5px; bottom: 5px; z-index: 2;
-  width: 30px; height: 30px; border-radius: 50%; border: 0; padding: 0;
-  background: rgba(20,18,16,.62); color: #fff; font-size: 18px; line-height: 1;
-  cursor: pointer; font-family: inherit; touch-action: manipulation;
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-  display: flex; align-items: center; justify-content: center;
-  opacity: 0; transition: opacity .18s;
-}
-.card .plus { opacity: .9; }
-.plus:active { background: rgba(20,18,16,.85); transform: scale(.9); }
+.badge { display: inline-block; font-size: 11px; padding: 2px 9px; border-radius: 999px; font-weight: 700; letter-spacing: .02em; }
+.b-new  { background: var(--accent-bg); color: var(--accent); }
+.b-soon { background: var(--soon-bg);   color: var(--soon); }
+.b-ok   { background: var(--ok-bg);     color: var(--ok); }
+.b-wait { background: var(--surface-2); color: var(--muted); }
 
-.tt { font-size: 11.5px; font-weight: 600; line-height: 1.35; margin-top: 7px;
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.mt { font-size: 10.5px; color: var(--muted); margin-top: 2px; font-variant-numeric: tabular-nums; }
-.mt b { color: var(--accent); font-weight: 700; }
-
-.empty { grid-column: 1 / -1; padding: 50px 20px; text-align: center; color: var(--muted); font-size: 13.5px; }
-
-/* ---- detail sheet ---- */
-.scrim {
-  position: fixed; inset: 0; z-index: 40; background: rgba(12,10,9,.5);
-  opacity: 0; pointer-events: none; transition: opacity .22s;
-  backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
+.bottom {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; margin-top: 12px; padding-top: 11px; border-top: 1px solid var(--line);
 }
-.scrim.open { opacity: 1; pointer-events: auto; }
-.sheet {
-  position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
-  background: var(--surface); border-radius: 20px 20px 0 0;
-  padding: 8px var(--pad) calc(22px + env(safe-area-inset-bottom));
-  box-shadow: var(--shadow-lg);
-  transform: translateY(102%); transition: transform .26s cubic-bezier(.32,.72,0,1);
-  max-height: 88vh; overflow-y: auto;
-}
-.sheet.open { transform: translateY(0); }
-@media (min-width: 640px) {
-  .sheet { left: 50%; right: auto; bottom: 24px; width: 460px; transform: translate(-50%, 130%); border-radius: 20px; }
-  .sheet.open { transform: translate(-50%, 0); }
-}
-.grip { width: 38px; height: 4px; border-radius: 99px; background: var(--line); margin: 0 auto 14px; }
-.sh-top { display: flex; gap: 14px; }
-.sh-cover { width: 92px; flex: 0 0 92px; aspect-ratio: 2/3; border-radius: 8px; overflow: hidden;
-  position: relative; box-shadow: var(--shadow); background: var(--surface-2); }
-.sh-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.sh-info { flex: 1; min-width: 0; }
-.sh-title { font-size: 16px; font-weight: 700; line-height: 1.35; }
-.sh-rows { margin-top: 9px; font-size: 12.5px; color: var(--muted); line-height: 1.75; }
-.sh-rows b { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
-.sh-note { margin-top: 8px; font-size: 11.5px; color: var(--muted); background: var(--surface-2);
-  padding: 7px 9px; border-radius: 8px; line-height: 1.5; }
+.info { font-size: 12px; color: var(--muted); line-height: 1.45; }
+.info b { font-variant-numeric: tabular-nums; color: var(--text); font-weight: 650; }
+.info b.gap { color: var(--accent); }
+.info .next { font-size: 11.5px; opacity: .85; margin-top: 1px; }
 
-.counter { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 18px; }
+.counter { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
 .counter button {
-  width: 56px; height: 50px; border-radius: 14px; border: 1px solid var(--line);
-  background: var(--surface-2); color: var(--text); font-size: 24px; line-height: 1;
+  width: 44px; height: 44px; border-radius: 13px; border: 1px solid var(--line);
+  background: var(--surface); color: var(--text); font-size: 21px; line-height: 1;
   cursor: pointer; font-family: inherit; padding: 0; touch-action: manipulation;
   display: flex; align-items: center; justify-content: center;
 }
-.counter button:active { transform: scale(.93); }
-.counter .v { min-width: 96px; text-align: center; font-variant-numeric: tabular-nums;
-  font-size: 27px; font-weight: 700; letter-spacing: -.02em; }
-.counter .v small { font-size: 12px; font-weight: 500; color: var(--muted); margin-left: 2px; }
-.sh-hint { text-align: center; font-size: 11px; color: var(--muted); margin-top: 8px; }
+.counter button:active { background: var(--surface-2); transform: scale(.93); }
+.counter .v { min-width: 54px; text-align: center; font-variant-numeric: tabular-nums; font-size: 19px; font-weight: 700; letter-spacing: -.01em; }
+.counter .v small { font-size: 11px; font-weight: 500; color: var(--muted); margin-left: 1px; }
 
-.foot { margin-top: 30px; padding-top: 15px; border-top: 1px solid var(--line);
+.empty { padding: 46px 20px; text-align: center; color: var(--muted); font-size: 13.5px; }
+
+.foot { margin-top: 28px; padding-top: 15px; border-top: 1px solid var(--line);
   font-size: 11.5px; color: var(--muted); line-height: 1.6; }
 .foot .btns { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
 .foot button {
   border: 1px solid var(--line); background: var(--surface); color: var(--muted); font-family: inherit;
-  padding: 8px 13px; border-radius: 9px; font-size: 11.5px; cursor: pointer; touch-action: manipulation;
+  padding: 9px 14px; border-radius: 9px; font-size: 11.5px; cursor: pointer; touch-action: manipulation;
 }
 .foot button:active { background: var(--surface-2); }
-.credit { margin-top: 12px; font-size: 10.5px; opacity: .75; }
-.credit a { color: inherit; }
+
+@media (min-width: 700px) {
+  body { max-width: 800px; margin: 0 auto; }
+  .row { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; }
+  .bottom { margin-top: 0; padding-top: 0; border: 0; flex-direction: row-reverse; gap: 16px; }
+}
 </style>
 </head>
 <body>
@@ -231,56 +181,52 @@ h1 { font-size: 19px; font-weight: 700; margin: 0; letter-spacing: .015em; }
   </div>
 </div>
 
-<div class="grid" id="grid"></div>
+<div class="list" id="list"></div>
 
 <div class="foot">
-  表紙をタップすると巻数を変更できます。読んだ記録はこの端末に保存され、次に開いても残ります。<br>
+  読んだら ＋ を押してください。記録はこの端末に保存され、次に開いても残ります。<br>
   作品の追加・削除はチャットから依頼してください。
   <div class="btns">
     <button id="export">データを書き出す</button>
     <button id="import">データを読み込む</button>
     <button id="reset">既読をリセット</button>
   </div>
-  <div class="credit">書影提供: <a href="https://ndlsearch.ndl.go.jp/" target="_blank" rel="noopener">国立国会図書館サーチ</a></div>
 </div>
-
-<div class="scrim" id="scrim"></div>
-<div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
 
 <script>
 // ==== 最新刊カタログ ====
 const UPDATED = "2026-08-15";
 const CATALOG = [
-  {t:"魔入りました！入間くん", init:49, latest:49, ld:"2026-06-08", next:50, nd:"2026-09-08", nc:"確定", isbn:"9784253013864"},
-  {t:"弱虫ペダル", init:101, latest:101, ld:"2026-07-08", next:102, nd:"2026-09-08", nc:"確定", isbn:null},
-  {t:"わたしの幸せな結婚（漫画）", init:6, latest:6, ld:"2026-03-12", next:7, nd:null, nc:"未定", isbn:"9784301003465"},
-  {t:"薫る花は凛と咲く", init:23, latest:23, ld:"2026-06-09", next:24, nd:"2026-09-09", nc:"確定", isbn:"9784065439104"},
-  {t:"夏目友人帳", init:33, latest:33, ld:"2026-04-03", next:34, nd:null, nc:"未定", isbn:"9784592222033"},
-  {t:"ワンダンス", init:15, latest:15, ld:"2025-12-23", next:16, nd:null, nc:"未定", isbn:"9784065417607"},
-  {t:"ダンス・ダンス・ダンスール", init:32, latest:32, ld:"2026-04-10", next:33, nd:"2026-09-11", nc:"確定", isbn:"9784098638710"},
-  {t:"ブルーピリオド", init:19, latest:19, ld:"2026-05-22", next:20, nd:"2026-11-20", nc:"予想", isbn:"9784065435496"},
-  {t:"アオのハコ", init:26, latest:26, ld:"2026-07-03", next:27, nd:"2026-10-02", nc:"確定", note:"最終28巻は12月発売予定", isbn:"9784088850924"},
-  {t:"メダリスト", init:15, latest:15, ld:"2026-07-22", next:16, nd:null, nc:"未定", isbn:"9784065442401"},
-  {t:"絢爛たるグランドセーヌ", init:30, latest:30, ld:"2026-07-17", next:31, nd:"2026-12-16", nc:"予想", isbn:"9784253018234"},
-  {t:"お隣の天使様（漫画版）", init:7, latest:7, ld:"2026-06-05", next:8, nd:null, nc:"未定", note:"スピンオフ「after the rain」は3巻まで", isbn:"9784301005667"},
-  {t:"ふつつかな悪女ではございますが（漫画）", init:10, latest:10, ld:"2026-03-31", next:11, nd:"2026-09-30", nc:"確定", isbn:"9784758098090"},
-  {t:"月刊少女野崎くん", init:17, latest:18, ld:"2026-08-10", next:19, nd:null, nc:"未定", isbn:"9784301005476"},
-  {t:"とんでもスキルで異世界放浪メシ（漫画）", init:10, latest:11, ld:"2025-07-25", next:12, nd:"2026-12-23", nc:"予想", isbn:"9784824012777"},
-  {t:"メイドインアビス", init:14, latest:14, ld:"2025-08-08", next:15, nd:"2026-08-26", nc:"確定", note:"電子版は8/17先行配信", isbn:"9784801987104"},
-  {t:"小林さんちのメイドラゴン", init:19, latest:19, ld:"2026-04-09", next:20, nd:"2026-09-03", nc:"予想", isbn:"9784575862065"},
-  {t:"アンサングシンデレラ 病院薬剤師 葵みどり", init:15, latest:15, ld:"2025-07-18", next:16, nd:null, nc:"未定", note:"完結（全15巻・15巻が最終巻）", isbn:"9784867207840"},
-  {t:"フラジャイル 病理医岸京一郎の所見", init:31, latest:31, ld:"2026-03-23", next:32, nd:"2026-09-18", nc:"確定", isbn:"9784065428597"},
-  {t:"死役所", init:28, latest:28, ld:"2025-07-09", next:29, nd:null, nc:"未定", isbn:"9784107728524"},
-  {t:"光が死んだ夏", init:9, latest:9, ld:"2026-06-04", next:10, nd:"2026-11-10", nc:"予想", isbn:"9784041174807"},
-  {t:"スーパーの裏でヤニ吸うふたり", init:8, latest:9, ld:"2026-07-24", next:10, nd:null, nc:"未定", isbn:"9784301006565"},
-  {t:"星旅少年 -Planetarium ghost travel-", init:6, latest:6, ld:"2026-01-23", next:7, nd:null, nc:"未定", isbn:"9784756260840"},
-  {t:"鴻池剛と猫のぽんた ニャアアアン！", init:4, latest:4, ld:"2026-02-26", next:5, nd:null, nc:"未定", isbn:"9784047388123"},
-  {t:"同居人はひざ、時々、頭のうえ。", init:12, latest:12, ld:"2025-12-15", next:13, nd:"2026-12-17", nc:"予想", isbn:"9784866754734"},
-  {t:"おじさまと猫", init:17, latest:17, ld:"2026-06-11", next:18, nd:"2026-11-11", nc:"予想", isbn:"9784301005803"},
-  {t:"夜は猫といっしょ", init:8, latest:9, ld:"2026-07-08", next:10, nd:null, nc:"未定", isbn:"9784046602572"},
-  {t:"うちの猫がまた変なことしてる。", init:8, latest:8, ld:"2024-09-19", next:9, nd:null, nc:"未定", note:"コミックエッセイ・刊行間隔は不定期", isbn:"9784046834904"},
-  {t:"魔男のイチ", init:9, latest:9, ld:"2026-07-03", next:10, nd:"2026-10-02", nc:"予想", isbn:"9784088851013"},
-  {t:"とんがり帽子のアトリエ", init:16, latest:16, ld:"2026-04-23", next:17, nd:"2026-09-23", nc:"予想", isbn:"9784065431528"}
+  {t:"魔入りました！入間くん", init:49, latest:49, ld:"2026-06-08", next:50, nd:"2026-09-08", nc:"確定"},
+  {t:"弱虫ペダル", init:101, latest:101, ld:"2026-07-08", next:102, nd:"2026-09-08", nc:"確定"},
+  {t:"わたしの幸せな結婚（漫画）", init:6, latest:6, ld:"2026-03-12", next:7, nd:null, nc:"未定"},
+  {t:"薫る花は凛と咲く", init:23, latest:23, ld:"2026-06-09", next:24, nd:"2026-09-09", nc:"確定"},
+  {t:"夏目友人帳", init:33, latest:33, ld:"2026-04-03", next:34, nd:null, nc:"未定"},
+  {t:"ワンダンス", init:15, latest:15, ld:"2025-12-23", next:16, nd:null, nc:"未定"},
+  {t:"ダンス・ダンス・ダンスール", init:32, latest:32, ld:"2026-04-10", next:33, nd:"2026-09-11", nc:"確定"},
+  {t:"ブルーピリオド", init:19, latest:19, ld:"2026-05-22", next:20, nd:"2026-11-20", nc:"予想"},
+  {t:"アオのハコ", init:26, latest:26, ld:"2026-07-03", next:27, nd:"2026-10-02", nc:"確定", note:"最終28巻は12月発売予定"},
+  {t:"メダリスト", init:15, latest:15, ld:"2026-07-22", next:16, nd:null, nc:"未定"},
+  {t:"絢爛たるグランドセーヌ", init:30, latest:30, ld:"2026-07-17", next:31, nd:"2026-12-16", nc:"予想"},
+  {t:"お隣の天使様（漫画版）", init:7, latest:7, ld:"2026-06-05", next:8, nd:null, nc:"未定", note:"スピンオフ「after the rain」は3巻まで"},
+  {t:"ふつつかな悪女ではございますが（漫画）", init:10, latest:10, ld:"2026-03-31", next:11, nd:"2026-09-30", nc:"確定"},
+  {t:"月刊少女野崎くん", init:17, latest:18, ld:"2026-08-10", next:19, nd:null, nc:"未定"},
+  {t:"とんでもスキルで異世界放浪メシ（漫画）", init:10, latest:11, ld:"2025-07-25", next:12, nd:"2026-12-23", nc:"予想"},
+  {t:"メイドインアビス", init:14, latest:14, ld:"2025-08-08", next:15, nd:"2026-08-26", nc:"確定", note:"電子版は8/17先行配信"},
+  {t:"小林さんちのメイドラゴン", init:19, latest:19, ld:"2026-04-09", next:20, nd:"2026-09-03", nc:"予想"},
+  {t:"アンサングシンデレラ 病院薬剤師 葵みどり", init:15, latest:15, ld:"2025-07-18", next:16, nd:null, nc:"未定", note:"完結（全15巻・15巻が最終巻）"},
+  {t:"フラジャイル 病理医岸京一郎の所見", init:31, latest:31, ld:"2026-03-23", next:32, nd:"2026-09-18", nc:"確定"},
+  {t:"死役所", init:28, latest:28, ld:"2025-07-09", next:29, nd:null, nc:"未定"},
+  {t:"光が死んだ夏", init:9, latest:9, ld:"2026-06-04", next:10, nd:"2026-11-10", nc:"予想"},
+  {t:"スーパーの裏でヤニ吸うふたり", init:8, latest:9, ld:"2026-07-24", next:10, nd:null, nc:"未定"},
+  {t:"星旅少年 -Planetarium ghost travel-", init:6, latest:6, ld:"2026-01-23", next:7, nd:null, nc:"未定"},
+  {t:"鴻池剛と猫のぽんた ニャアアアン！", init:4, latest:4, ld:"2026-02-26", next:5, nd:null, nc:"未定"},
+  {t:"同居人はひざ、時々、頭のうえ。", init:12, latest:12, ld:"2025-12-15", next:13, nd:"2026-12-17", nc:"予想"},
+  {t:"おじさまと猫", init:17, latest:17, ld:"2026-06-11", next:18, nd:"2026-11-11", nc:"予想"},
+  {t:"夜は猫といっしょ", init:8, latest:9, ld:"2026-07-08", next:10, nd:null, nc:"未定"},
+  {t:"うちの猫がまた変なことしてる。", init:8, latest:8, ld:"2024-09-19", next:9, nd:null, nc:"未定", note:"コミックエッセイ・刊行間隔は不定期"},
+  {t:"魔男のイチ", init:9, latest:9, ld:"2026-07-03", next:10, nd:"2026-10-02", nc:"予想"},
+  {t:"とんがり帽子のアトリエ", init:16, latest:16, ld:"2026-04-23", next:17, nd:"2026-09-23", nc:"予想"}
 ];
 // ==== ここまで ====
 
@@ -289,38 +235,23 @@ const TODAY = (() => { const d = new Date(); d.setHours(0,0,0,0); return d; })()
 let store = {};
 try { store = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch(e) { store = {}; }
 let filter = "unread";
-let openIdx = -1;
 
-const read  = m => (m.t in store) ? store[m.t] : m.init;
-const days  = d => d ? Math.round((new Date(d+"T00:00:00") - TODAY) / 86400000) : null;
-const fmt   = d => d ? (+d.slice(5,7)) + "/" + (+d.slice(8,10)) + "（" + d.slice(2,4) + "年）" : "未定";
-const esc   = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const cover = m => m.isbn ? "https://ndlsearch.ndl.go.jp/thumbnail/" + m.isbn + ".jpg" : null;
-const save  = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch(e) {} };
+const read = m => (m.t in store) ? store[m.t] : m.init;
+const days = d => d ? Math.round((new Date(d+"T00:00:00") - TODAY) / 86400000) : null;
+const fmt  = d => d ? (+d.slice(5,7)) + "/" + (+d.slice(8,10)) + "（" + d.slice(2,4) + "年）" : "未定";
+const esc  = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch(e) {} };
 
-function hueOf(t) {
-  let h = 0;
-  for (let i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) >>> 0;
-  return h % 360;
-}
 function state(m) {
   if (read(m) < m.latest) return "unread";
   const dn = days(m.nd);
   if (dn !== null && dn >= 0 && dn <= 60) return "soon";
   return "ok";
 }
-function coverHTML(m, cls) {
-  const h = hueOf(m.t), src = cover(m);
-  return '<div class="' + cls + '" style="--h:' + h + ';--h2:' + ((h + 26) % 360) + '">' +
-    '<div class="ph"><div class="t">' + esc(m.t) + '</div>' +
-    '<div class="v">' + m.latest + '<small>巻</small></div></div>' +
-    (src ? '<img src="' + src + '" alt="" loading="lazy" decoding="async" ' +
-           'referrerpolicy="no-referrer" onerror="this.remove()">' : '') +
-  '</div>';
-}
 
 function render() {
-  const rows = CATALOG.map((m, i) => ({m, i, s: state(m), gap: Math.max(0, m.latest - read(m))}));
+  const list = document.getElementById("list");
+  const rows = CATALOG.map(m => ({m, s: state(m), gap: Math.max(0, m.latest - read(m))}));
 
   document.getElementById("c-unread").textContent = rows.reduce((a,r)=>a+r.gap, 0);
   document.getElementById("c-titles").textContent = rows.filter(r=>r.gap>0).length;
@@ -344,110 +275,53 @@ function render() {
     });
   }
 
-  const grid = document.getElementById("grid");
   if (!show.length) {
-    grid.innerHTML = '<div class="empty">' +
-      (filter === "soon"   ? "発売日が判明している次巻はありません。"
+    list.innerHTML = '<div class="empty">' +
+      (filter === "soon"     ? "発売日が判明している次巻はありません。"
        : filter === "unread" ? "未読はありません。全部追いつけています 🎉"
        : "作品がありません。") + '</div>';
     return;
   }
 
-  grid.innerHTML = show.map(({m, i, s, gap}) => {
-    const dn = days(m.nd);
-    let tag = "";
-    if (gap > 0) tag = '<span class="tag t-new">未読 ' + gap + '</span>';
-    else if (s === "soon") tag = '<span class="tag t-soon">' + (dn === 0 ? '本日' : 'あと' + dn + '日') + '</span>';
+  list.innerHTML = show.map(({m, s, gap}) => {
+    const r = read(m), dn = days(m.nd);
+    let badge = '<span class="badge b-ok">最新</span>';
+    if (gap > 0) badge = '<span class="badge b-new">未読 ' + gap + '冊</span>';
+    else if (dn !== null && dn >= 0) {
+      badge = '<span class="badge ' + (s === "soon" ? 'b-soon' : 'b-wait') + '">' +
+              (dn === 0 ? '本日発売' : 'あと' + dn + '日') + '</span>';
+    }
+    const nextLine = m.nd
+      ? '次: ' + m.next + '巻 ' + fmt(m.nd) + (m.nc === "予想" ? " 予想" : " 予定")
+      : '次: ' + m.next + '巻 発売日未定';
 
-    return '<div class="card" data-i="' + i + '">' +
-      tag +
-      coverHTML(m, "cover") +
-      '<button class="plus" data-plus="' + i + '" aria-label="1巻読んだ">＋</button>' +
-      '<div class="tt">' + esc(m.t) + '</div>' +
-      '<div class="mt">' + (gap > 0 ? '<b>' + read(m) + '</b>' : read(m)) + ' / ' + m.latest + '巻</div>' +
+    return '<div class="row ' + (gap>0 ? 'unread' : s==='soon' ? 'soon' : '') + '">' +
+      '<div>' +
+        '<div class="tt">' + esc(m.t) + '</div>' +
+        '<div class="meta">' + badge + (m.note ? '<span>' + esc(m.note) + '</span>' : '') + '</div>' +
+      '</div>' +
+      '<div class="bottom">' +
+        '<div class="info">既刊 <b' + (gap>0 ? ' class="gap"' : '') + '>' + m.latest + '巻</b>' +
+        (m.ld ? ' ・ ' + fmt(m.ld) : '') +
+        '<div class="next">' + nextLine + '</div></div>' +
+        '<div class="counter">' +
+          '<button data-d="-1" data-t="' + esc(m.t) + '" aria-label="減らす">−</button>' +
+          '<span class="v">' + r + '<small>巻</small></span>' +
+          '<button data-d="1" data-t="' + esc(m.t) + '" aria-label="増やす">＋</button>' +
+        '</div>' +
+      '</div>' +
     '</div>';
   }).join("");
-
-  tallyCovers();
 }
 
-/* 書影が実際に取得できたかをコンソールに要約（動作確認用） */
-let tallyTimer = null;
-function tallyCovers() {
-  clearTimeout(tallyTimer);
-  tallyTimer = setTimeout(() => {
-    const imgs = document.querySelectorAll(".grid .cover img");
-    let ok = 0;
-    imgs.forEach(im => { if (im.complete && im.naturalWidth > 0) ok++; });
-    const withIsbn = CATALOG.filter(m => m.isbn).length;
-    console.log("[cover] 表示中タイル " + document.querySelectorAll(".grid .card").length +
-                " / 書影読み込み成功 " + ok + " / ISBN登録 " + withIsbn + "件");
-  }, 2500);
-}
-
-/* ---- 詳細シート ---- */
-function openSheet(i) {
-  openIdx = i;
-  const m = CATALOG[i], dn = days(m.nd);
-  const nextLine = m.nd
-    ? m.next + '巻 ' + fmt(m.nd) + (m.nc === "予想" ? " 予想" : " 予定") +
-      (dn !== null && dn >= 0 ? '（あと' + dn + '日）' : '')
-    : m.next + '巻 発売日未定';
-
-  document.getElementById("sheet").innerHTML =
-    '<div class="grip"></div>' +
-    '<div class="sh-top">' +
-      coverHTML(m, "sh-cover") +
-      '<div class="sh-info">' +
-        '<div class="sh-title">' + esc(m.t) + '</div>' +
-        '<div class="sh-rows">' +
-          '既刊 <b>' + m.latest + '巻</b>' + (m.ld ? '・' + fmt(m.ld) : '') + '<br>' +
-          '次: ' + esc(nextLine) +
-        '</div>' +
-        (m.note ? '<div class="sh-note">' + esc(m.note) + '</div>' : '') +
-      '</div>' +
-    '</div>' +
-    '<div class="counter">' +
-      '<button data-d="-1" aria-label="減らす">−</button>' +
-      '<span class="v" id="sh-v">' + read(m) + '<small>巻まで読んだ</small></span>' +
-      '<button data-d="1" aria-label="増やす">＋</button>' +
-    '</div>' +
-    '<div class="sh-hint">背景をタップすると閉じます</div>';
-
-  document.getElementById("sheet").classList.add("open");
-  document.getElementById("scrim").classList.add("open");
-}
-function closeSheet() {
-  openIdx = -1;
-  document.getElementById("sheet").classList.remove("open");
-  document.getElementById("scrim").classList.remove("open");
-}
-
-document.getElementById("grid").addEventListener("click", e => {
-  const p = e.target.closest("button[data-plus]");
-  if (p) {
-    e.stopPropagation();
-    const m = CATALOG[+p.dataset.plus];
-    store[m.t] = Math.max(0, read(m) + 1);
-    save(); render();
-    return;
-  }
-  const c = e.target.closest(".card");
-  if (c) openSheet(+c.dataset.i);
-});
-
-document.getElementById("sheet").addEventListener("click", e => {
+document.getElementById("list").addEventListener("click", e => {
   const b = e.target.closest("button[data-d]");
-  if (!b || openIdx < 0) return;
-  const m = CATALOG[openIdx];
+  if (!b) return;
+  const m = CATALOG.find(x => x.t === b.dataset.t);
+  if (!m) return;
   store[m.t] = Math.max(0, read(m) + (+b.dataset.d));
-  save();
-  document.getElementById("sh-v").innerHTML = read(m) + '<small>巻まで読んだ</small>';
-  render();
+  save(); render();
 });
-
-document.getElementById("scrim").addEventListener("click", closeSheet);
-document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });
 
 document.querySelectorAll(".tab").forEach(tb => tb.addEventListener("click", () => {
   document.querySelectorAll(".tab").forEach(x => x.classList.remove("on"));
