@@ -1,17 +1,10 @@
-name: 楽天API診断
+name: 作品の取得内容を調べる
 
 on:
   workflow_dispatch:
     inputs:
-      mode:
-        description: "調べる内容"
-        type: choice
-        default: inspect
-        options:
-          - inspect      # 特定作品が何を拾っているか調べる
-          - connection   # 接続方法を試す
       titles:
-        description: "調べる作品名（カンマ区切り。空欄なら誤検出の報告があった作品）"
+        description: "調べる作品名（カンマ区切り。空欄なら誤検出の報告があった4作品）"
         required: false
         default: ""
 
@@ -19,27 +12,19 @@ permissions:
   contents: read
 
 jobs:
-  diagnose:
+  inspect:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
 
-      - name: 接続方法を試す
-        if: inputs.mode == 'connection'
+      - name: 楽天が返す商品を1件ずつ表示
         env:
           RAKUTEN_APP_ID: ${{ secrets.RAKUTEN_APP_ID }}
           RAKUTEN_ACCESS_KEY: ${{ secrets.RAKUTEN_ACCESS_KEY }}
-        run: node scripts/diagnose-rakuten.mjs
-
-      - name: 作品ごとの取得内容を調べる
-        if: inputs.mode == 'inspect'
-        env:
-          RAKUTEN_APP_ID: ${{ secrets.RAKUTEN_APP_ID }}
-          RAKUTEN_ACCESS_KEY: ${{ secrets.RAKUTEN_ACCESS_KEY }}
-          TITLES: ${{ inputs.titles }}
+          TITLES: ${{ github.event.inputs.titles }}
         run: |
           if [ -n "$TITLES" ]; then
             IFS=',' read -ra ARR <<< "$TITLES"
