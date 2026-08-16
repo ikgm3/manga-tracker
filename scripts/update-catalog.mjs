@@ -111,6 +111,31 @@ function isExcluded(itemTitle, excludes) {
 }
 
 /**
+ * 商品タイトルから巻数表記を取り除き、画面に出すシリーズ名を作る。
+ * 正規化していない元のタイトルを使う（全角・記号をそのまま残すため）。
+ *
+ *   "アオのハコ 26"                       → "アオのハコ"
+ *   "薫る花は凛と咲く（23）"               → "薫る花は凛と咲く"
+ *   "星旅少年6"                            → "星旅少年"
+ *   "ふつつかな悪女…〜雛宮蝶鼠とりかえ伝〜　11巻" → "ふつつかな悪女…〜雛宮蝶鼠とりかえ伝〜"
+ */
+function deriveTitle(rawTitle) {
+  if (!rawTitle) return null;
+  let s = String(rawTitle).trim();
+  const patterns = [
+    /[\s　]*[（(]\s*\d{1,3}\s*[)）][\s　]*$/,  // （23）
+    /[\s　]*第?\s*\d{1,3}\s*巻[\s　]*$/,        // 11巻 / 第11巻
+    /[\s　]*第?\s*\d{1,3}[\s　]*$/              // 26 / 星旅少年6
+  ];
+  for (const re of patterns) {
+    if (re.test(s)) { s = s.replace(re, "").trim(); break; }
+  }
+  s = s.replace(/[\s　]+/g, " ").trim();
+  if (!s || s.length > 80) return null;
+  return s;
+}
+
+/**
  * 楽天の画像URLはサイズ指定が付くので、サムネイル用に付け直す。
  * APIの返り値をそのまま index.html に埋め込むため、
  * 楽天の画像ドメイン以外は受け付けない（URL偽装・別サイト誘導の防止）。
@@ -200,7 +225,7 @@ function readCurrentCatalog(html) {
     };
     prev.set(t, { init: num("init"), latest: num("latest"), ld: str("ld"),
                   next: num("next"), nd: str("nd"), nc: str("nc"),
-                  note: str("note"), img: str("img") });
+                  note: str("note"), img: str("img"), disp: str("disp") });
   }
   return prev;
 }
@@ -219,7 +244,8 @@ async function resolveTitle(entry, globalExclude, prev, mockItems) {
     nd: before.nd ?? null,
     nc: before.nc ?? "未定",
     note: entry.note ?? before.note ?? null,
-    img: before.img ?? null
+    img: before.img ?? null,
+    disp: entry.displayName ?? before.disp ?? null
   };
 
   if (entry.complete) return { row: base, status: "complete", matched: 0 };
@@ -250,7 +276,7 @@ async function resolveTitle(entry, globalExclude, prev, mockItems) {
     const pubOk = entry.publisher
       ? norm(it.publisherName || "").includes(norm(entry.publisher))
       : true;
-    const cand = { vol, ...sd, title, pubOk, publisher: it.publisherName || "",
+    const cand = { vol, ...sd, title, raw: title, pubOk, publisher: it.publisherName || "",
                    image: normImage(it.largeImageUrl || it.mediumImageUrl || it.smallImageUrl) };
     const cur = byVol.get(vol);
     // 同じ巻が複数あるときは 出版社一致 > タイトルが短い（通常版）を優先
@@ -290,6 +316,9 @@ async function resolveTitle(entry, globalExclude, prev, mockItems) {
       row.latest = top.vol;
       row.ld = top.date;
       if (top.image) row.img = top.image;
+      // 表示名は楽天の商品名から巻数を除いたものを使う。
+      // watchlist で displayName が指定されていればそちらを優先。
+      if (!entry.displayName) row.disp = deriveTitle(top.raw) ?? row.disp;
     }
   } else if (upcoming.length) {
     status = "only-upcoming";
@@ -336,6 +365,7 @@ const jstr = v => (v === null || v === undefined) ? "null"
 function renderRow(r) {
   let s = `  {t:${jstr(r.t)}, init:${r.init}, latest:${r.latest}, ld:${jstr(r.ld)},`
         + ` next:${r.next}, nd:${jstr(r.nd)}, nc:${jstr(r.nc)}`;
+  if (r.disp && r.disp !== r.t) s += `, disp:${jstr(r.disp)}`;
   if (r.note) s += `, note:${jstr(r.note)}`;
   s += `, img:${jstr(r.img ?? null)}`;
   return s + "}";
