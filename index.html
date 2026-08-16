@@ -328,7 +328,7 @@ function render() {
     const thumb = '<div class="thumb" style="--h:' + h + ';--h2:' + ((h + 26) % 360) + '">' +
       '<div class="ph">' + m.latest + '</div>' +
       (m.img ? '<img src="' + esc(m.img) + '" alt="" loading="lazy" decoding="async" ' +
-               'referrerpolicy="no-referrer" onerror="this.remove()">' : '') +
+               'onerror="this.remove()">' : '') +
     '</div>';
 
     return '<div class="row ' + (gap>0 ? 'unread' : s==='soon' ? 'soon' : '') + '">' +
