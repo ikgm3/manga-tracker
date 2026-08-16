@@ -1,1 +1,6 @@
 * text=auto eol=lf
+
+# GitHub Actions が毎回書き換える実行ログ。
+# 手元とリモートの両方で変更されて必ず競合するが、中身は単なる記録なので
+# 競合時は常にリモート（Actions が書いた最新）を採用する。
+data/last-run.json merge=ours
