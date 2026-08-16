@@ -110,12 +110,20 @@ function isExcluded(itemTitle, excludes) {
   return excludes.some(x => n.includes(norm(x)));
 }
 
-/** 楽天の画像URLはサイズ指定が付くので、サムネイル用に付け直す */
+/**
+ * 楽天の画像URLはサイズ指定が付くので、サムネイル用に付け直す。
+ * APIの返り値をそのまま index.html に埋め込むため、
+ * 楽天の画像ドメイン以外は受け付けない（URL偽装・別サイト誘導の防止）。
+ */
+const IMAGE_HOSTS = /(^|\.)rakuten\.co\.jp$/;
+
 function normImage(u) {
   if (!u) return null;
-  const base = String(u).split("?")[0];
-  if (!/^https:\/\//.test(base)) return null;
-  return base + "?_ex=240x240";
+  let url;
+  try { url = new URL(String(u)); } catch { return null; }
+  if (url.protocol !== "https:") return null;
+  if (!IMAGE_HOSTS.test(url.hostname)) return null;
+  return url.origin + url.pathname + "?_ex=240x240";
 }
 
 /* ---------------- 楽天API ---------------- */
@@ -299,7 +307,25 @@ async function resolveTitle(entry, globalExclude, prev, mockItems) {
 
 /* ---------------- CATALOG 出力 ---------------- */
 
-const jstr = v => (v === null || v === undefined) ? "null" : JSON.stringify(v);
+/**
+ * CATALOG は index.html の <script> ブロック内に直接書き出される。
+ * そのため JSON.stringify だけでは不十分で、文字列中の "</script>" が
+ * そのまま出力されるとスクリプトが途中で終了し、続きがHTMLとして
+ * 解釈されてしまう（XSS）。
+ *
+ * < > & を \uXXXX 形式に逃がしておけば、JSとしての値は変わらないまま
+ * HTMLパーサからはタグに見えなくなる。
+ * U+2028 / U+2029 はJSの文字列リテラルを壊すので併せて逃がす。
+ */
+const jstr = v => (v === null || v === undefined) ? "null"
+  : JSON.stringify(v)
+      .replace(/</g, "\\u003c")
+      .replace(/>/g, "\\u003e")
+      .replace(/&/g, "\\u0026")
+      // U+2028 / U+2029 はJSでは改行扱いのため、正規表現リテラルに
+      // 生の文字を書くと構文エラーになる。必ずエスケープ記法で書くこと。
+      .replace(/\u2028/g, "\\u2028")
+      .replace(/\u2029/g, "\\u2029");
 
 function renderRow(r) {
   let s = `  {t:${jstr(r.t)}, init:${r.init}, latest:${r.latest}, ld:${jstr(r.ld)},`

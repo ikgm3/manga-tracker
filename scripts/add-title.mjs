@@ -54,9 +54,27 @@ const publisher = (f["出版社（任意）"] || "").trim();
 const excludeRaw = (f["除外語（任意）"] || "").trim();
 const note = (f["備考（任意）"] || "").trim();
 
+/**
+ * Issueの入力はそのまま watchlist.json → index.html まで流れるので、
+ * HTMLやJSを壊しうる記号は全項目で受け付けない。
+ * 制御文字も混入させない。
+ */
+const BAD_CHARS = /[<>{}"\\`]/;
+const CONTROL   = /[\u0000-\u001f\u007f\u2028\u2029]/;
+
+function checkField(label, value, max) {
+  if (!value) return;
+  if (value.length > max) fail(`${label}が長すぎます（${max}文字以内）。`);
+  if (BAD_CHARS.test(value)) fail(`${label}に使えない記号が含まれています（ < > { } " \\ \` ）。`);
+  if (CONTROL.test(value)) fail(`${label}に使えない制御文字が含まれています。`);
+}
+
 if (!t) fail("作品名が読み取れませんでした。");
-if (t.length > 60) fail("作品名が長すぎます（60文字以内）。");
-if (/[<>{}"\\]/.test(t)) fail("作品名に使えない記号が含まれています（ < > { } \" \\ ）。");
+checkField("作品名", t, 60);
+checkField("検索語", query, 80);
+checkField("出版社", publisher, 40);
+checkField("除外語", excludeRaw, 200);
+checkField("備考", note, 100);
 
 if (/^[-−ー]/.test(readRaw)) {
   fail(`既読巻数「${readRaw}」が負の数に見えます。0以上の数字で入力してください。`);
