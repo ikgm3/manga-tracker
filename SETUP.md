@@ -121,10 +121,42 @@ git push
 
 **STEP 5と6が成功してから**やってください。
 
-1. Windowsの「タスク スケジューラ」を開く
-2. manga-tracker のpushタスクを見つけて**無効化**する（削除でなく無効化を推奨）
+### PowerShellでやる場合（おすすめ）
 
-これでPCの電源に関係なく、毎朝8時に自動更新されます。
+まずタスク名を調べる。
+
+```powershell
+Get-ScheduledTask | Where-Object {$_.TaskName -like "*manga*" -or $_.TaskName -like "*マンガ*"} |
+  Format-Table TaskName, State, TaskPath
+```
+
+出てきた名前で無効化する。**タスク名は `manga-tracker push`（スペースあり）**。
+
+```powershell
+Disable-ScheduledTask -TaskName "manga-tracker push"
+```
+
+`State` が `Disabled` になれば完了。名前を一字でも省くと
+「指定されたファイルが見つかりません」になるので、引用符ごと正確に入れること。
+
+見つからないときは、名前が違う可能性があるので全件から探す。
+
+```powershell
+Get-ScheduledTask | Where-Object {$_.State -ne "Disabled"} | Format-Table TaskName, TaskPath
+```
+
+### GUIでやる場合
+
+1. `Win + R` → `taskschd.msc` → Enter
+2. 左の「タスク スケジューラ ライブラリ」を開く
+3. 該当タスクを右クリック → **無効**
+
+削除ではなく**無効化**にしておくこと。戻したくなったら右クリック → 有効 で復活できる。
+
+これでPCの電源に関係なく、毎朝8時に自動更新される。
+
+> `push-manga-tracker.bat` は消さないこと。チャットで修正した内容をGitHubへ
+> 反映するときに、手動で `git push` する経路として残しておく。
 
 ---
 
