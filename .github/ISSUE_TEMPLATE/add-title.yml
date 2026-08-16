@@ -1,20 +1,21 @@
 name: 作品を追加
-description: トラッカーに新しい漫画を追加します
-title: "[追加] "
+description: トラッカーに漫画を追加します
+title: "作品を追加"
 labels: ["add-title"]
 body:
   - type: markdown
     attributes:
       value: |
-        追加したい漫画を入力して送信してください。
-        自動で楽天ブックスを検索し、既刊・次巻の発売予定を調べてトラッカーに反映します。
-        結果はこのIssueに返信されます（1〜2分ほどかかります）。
+        **上の「Title」欄は入力済みなので、そのままで構いません。**
+        下の2つだけ埋めて送信してください。1〜2分で反映され、結果がこのIssueに返信されます。
 
   - type: input
     id: title
     attributes:
       label: 作品名
-      description: アプリに表示される名前です。あとから変更すると既読巻数が消えるので慎重に決めてください。
+      description: |
+        楽天ブックスで検索する名前です。だいたいで構いません。
+        画面に出る正式タイトルは自動で取得するので、多少違っていても直ります。
       placeholder: 葬送のフリーレン
     validations:
       required: true
@@ -23,43 +24,7 @@ body:
     id: read
     attributes:
       label: 既読巻数
-      description: 今何巻まで読み終えていますか。まだ読んでいなければ 0 を入れてください。
+      description: 今どこまで読み終えているか。まだ読んでいなければ 0。
       placeholder: "12"
     validations:
       required: true
-
-  - type: input
-    id: query
-    attributes:
-      label: 検索語（任意）
-      description: 楽天での検索がうまくいかない場合に指定します。空欄なら作品名をそのまま使います。
-      placeholder: フリーレン
-    validations:
-      required: false
-
-  - type: input
-    id: publisher
-    attributes:
-      label: 出版社（任意）
-      description: 同名の別作品と紛らわしいときに指定すると精度が上がります。
-      placeholder: 小学館
-    validations:
-      required: false
-
-  - type: input
-    id: exclude
-    attributes:
-      label: 除外語（任意）
-      description: スピンオフや別レーベルを除きたいときに、カンマ区切りで指定します。
-      placeholder: 公式ガイド, ぷちフリーレン
-    validations:
-      required: false
-
-  - type: input
-    id: note
-    attributes:
-      label: 備考（任意）
-      description: アプリの作品名の横に小さく表示されます。
-      placeholder: 完結済み
-    validations:
-      required: false

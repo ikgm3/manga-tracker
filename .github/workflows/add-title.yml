@@ -24,7 +24,7 @@ jobs:
       github.event.issue.user.login == github.repository_owner &&
       (
         contains(join(github.event.issue.labels.*.name, ','), 'add-title') ||
-        startsWith(github.event.issue.title, '[追加]') ||
+        startsWith(github.event.issue.title, '作品を追加') ||
         contains(github.event.issue.body, '### 作品名')
       )
     runs-on: ubuntu-latest
