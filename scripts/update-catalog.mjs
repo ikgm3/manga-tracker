@@ -71,10 +71,20 @@ function norm(s) {
  * 商品タイトルから巻数を取り出す。
  * 例: "アオのハコ 26" / "薫る花は凛と咲く（23）" / "星旅少年6" / "死役所 28"
  */
-function parseVolume(itemTitle, query) {
+/** カレンダー・手帳など、西暦を含む商品は巻数と紛らわしいので弾く */
+const hasYear = n => /(19|20)\d{2}/.test(n);
+
+function parseVolume(itemTitle, query, volumeRegex) {
   const n = norm(itemTitle);
   const q = norm(query);
   if (!n.includes(q)) return null;
+
+  // 作品ごとに巻数の書式が指定されていれば、それだけを信じる
+  // （例: 同じ出版社から原作小説も出ていて「N巻」表記の有無でしか区別できない場合）
+  if (volumeRegex) {
+    const m = n.match(new RegExp(volumeRegex));
+    return m ? +m[1] : null;
+  }
 
   // 1) シリーズ名の直後にある数字（最も信頼できる）
   const rest = n.slice(n.indexOf(q) + q.length);
@@ -85,9 +95,12 @@ function parseVolume(itemTitle, query) {
   const m2 = n.match(/第(\d{1,3})巻/);
   if (m2) return +m2[1];
 
-  // 3) 末尾の数字（サブタイトルを挟む作品向け。除外語の判定を通った後なので許容する）
-  const m3 = rest.replace(/巻$/, "").match(/(\d{1,3})$/);
-  if (m3) return +m3[1];
+  // 3) 末尾の数字。サブタイトルを挟む作品向けだが誤爆しやすいので、
+  //    西暦を含む商品（手帳・カレンダー等）では使わない
+  if (!hasYear(n)) {
+    const m3 = rest.replace(/巻$/, "").match(/(?<![0-9-])(\d{1,3})$/);
+    if (m3) return +m3[1];
+  }
 
   return null;
 }
@@ -221,7 +234,7 @@ async function resolveTitle(entry, globalExclude, prev, mockItems) {
   for (const it of items) {
     const title = it.title || "";
     if (isExcluded(title, excludes)) continue;
-    const vol = parseVolume(title, entry.query);
+    const vol = parseVolume(title, entry.query, entry.volumeRegex);
     if (vol === null) continue;
     const sd = parseSalesDate(it.salesDate);
     if (!sd) continue;
