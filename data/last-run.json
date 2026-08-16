@@ -1,7 +1,9 @@
 {
-  "ranAt": "2026-08-16T03:22:11.857Z",
+  "ranAt": "2026-08-16T03:25:16.954Z",
   "today": "2026-08-16",
-  "newVolumes": [],
+  "newVolumes": [
+    "ガラスの仮面 49巻（2012-10-26）"
+  ],
   "titles": [
     {
       "t": "魔入りました！入間くん",
@@ -47,8 +49,8 @@
     },
     {
       "t": "薫る花は凛と咲く",
-      "status": "ok",
-      "matched": 3,
+      "status": "suspicious-jump",
+      "matched": 4,
       "latest": 23,
       "ld": "2026-06-09",
       "next": 24,
@@ -425,28 +427,17 @@
     },
     {
       "t": "ガラスの仮面",
-      "status": "suspicious-jump",
-      "matched": 1,
-      "latest": 10,
-      "ld": null,
-      "next": 11,
+      "status": "ok",
+      "matched": 2,
+      "latest": 49,
+      "ld": "2012-10-26",
+      "next": 50,
       "nd": null,
       "nc": "未定",
       "before": {
         "latest": 10,
         "nd": null
       }
-    },
-    {
-      "t": "攻撃テスト作品",
-      "status": "no-match",
-      "matched": 0,
-      "latest": 1,
-      "ld": null,
-      "next": 2,
-      "nd": null,
-      "nc": "未定",
-      "before": null
     }
   ]
 }

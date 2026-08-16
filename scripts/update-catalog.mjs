@@ -271,14 +271,20 @@ async function resolveTitle(entry, globalExclude, prev, mockItems) {
   const row = { ...base };
   let status = "ok";
 
-  // 巻数が一気に跳ね上がったら誤検出を疑う（単話版・別シリーズの混入など）
+  // 巻数が一気に跳ね上がったら誤検出を疑う（単話版・別シリーズの混入など）。
+  //
+  // ただしこのガードは「APIで一度確認できた値」を守るためのもの。
+  // 発売日(ld)が入っていない＝まだ一度もAPIで確定できていない状態なので、
+  // そこに入っている巻数は初期既読巻数(init)のままの仮の値でしかない。
+  // これを守ってしまうと、新規追加した作品が永久に更新されなくなる。
+  const unconfirmed = !prev.has(key) || !before.ld;
   const maxJump = entry.maxJump ?? 3;
 
   if (released.length) {
     const top = released[0];
     if (top.vol < base.latest) {
       status = "regression-ignored";   // API側の欠落。既存値を守る
-    } else if (base.latest > 0 && top.vol > base.latest + maxJump) {
+    } else if (!unconfirmed && base.latest > 0 && top.vol > base.latest + maxJump) {
       status = "suspicious-jump";      // 既存値を守り、人間の確認に回す
     } else {
       row.latest = top.vol;
