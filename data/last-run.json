@@ -1,5 +1,5 @@
 {
-  "ranAt": "2026-08-16T00:05:53.512Z",
+  "ranAt": "2026-08-16T00:33:58.002Z",
   "today": "2026-08-16",
   "newVolumes": [],
   "titles": [
@@ -422,6 +422,17 @@
         "latest": 16,
         "nd": null
       }
+    },
+    {
+      "t": "ガラスの仮面",
+      "status": "suspicious-jump",
+      "matched": 34,
+      "latest": 10,
+      "ld": null,
+      "next": 11,
+      "nd": null,
+      "nc": "未定",
+      "before": null
     }
   ]
 }
