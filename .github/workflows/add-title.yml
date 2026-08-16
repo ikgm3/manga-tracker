@@ -14,8 +14,13 @@ concurrency:
 
 jobs:
   add:
-    # 「作品を追加」テンプレートから作られたIssueだけを処理する
-    if: contains(join(github.event.issue.labels.*.name, ','), 'add-title')
+    # 「作品を追加」テンプレートから作られたIssueだけを処理する。
+    # ラベルはリポジトリに存在しないと付与されないことがあるため、
+    # タイトルと本文でも判定できるようにしておく。
+    if: >
+      contains(join(github.event.issue.labels.*.name, ','), 'add-title') ||
+      startsWith(github.event.issue.title, '[追加]') ||
+      contains(github.event.issue.body, '### 作品名')
     runs-on: ubuntu-latest
     env:
       TZ: Asia/Tokyo
