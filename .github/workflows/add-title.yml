@@ -14,13 +14,19 @@ concurrency:
 
 jobs:
   add:
-    # 「作品を追加」テンプレートから作られたIssueだけを処理する。
+    # リポジトリは公開されているため、Issueは誰でも立てられる。
+    # 実際に処理するのはリポジトリ所有者が立てたものだけに限定する。
+    #
+    # さらに「作品を追加」テンプレート由来かどうかも見る。
     # ラベルはリポジトリに存在しないと付与されないことがあるため、
-    # タイトルと本文でも判定できるようにしておく。
+    # タイトルと本文でも判定できるようにしてある。
     if: >
-      contains(join(github.event.issue.labels.*.name, ','), 'add-title') ||
-      startsWith(github.event.issue.title, '[追加]') ||
-      contains(github.event.issue.body, '### 作品名')
+      github.event.issue.user.login == github.repository_owner &&
+      (
+        contains(join(github.event.issue.labels.*.name, ','), 'add-title') ||
+        startsWith(github.event.issue.title, '[追加]') ||
+        contains(github.event.issue.body, '### 作品名')
+      )
     runs-on: ubuntu-latest
     env:
       TZ: Asia/Tokyo
