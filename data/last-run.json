@@ -1,6 +1,6 @@
 {
-  "ranAt": "2026-09-20T04:05:48.186Z",
-  "today": "2026-09-20",
+  "ranAt": "2026-09-21T00:42:06.168Z",
+  "today": "2026-09-21",
   "newVolumes": [],
   "titles": [
     {
@@ -446,7 +446,10 @@
       "next": 6,
       "nd": null,
       "nc": "未定",
-      "before": null
+      "before": {
+        "latest": 5,
+        "nd": null
+      }
     }
   ]
 }
