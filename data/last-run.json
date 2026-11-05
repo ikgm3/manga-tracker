@@ -1,17 +1,17 @@
 {
-  "ranAt": "2026-11-04T02:50:49.771Z",
-  "today": "2026-11-04",
+  "ranAt": "2026-11-05T02:59:25.935Z",
+  "today": "2026-11-05",
   "newVolumes": [],
   "titles": [
     {
       "t": "魔入りました！入間くん",
       "status": "ok",
-      "matched": 31,
+      "matched": 32,
       "latest": 51,
       "ld": "2026-10-07",
       "next": 52,
-      "nd": null,
-      "nc": "未定",
+      "nd": "2027-01-07",
+      "nc": "確定",
       "before": {
         "latest": 51,
         "nd": null
@@ -272,12 +272,12 @@
     {
       "t": "死役所",
       "status": "ok",
-      "matched": 28,
+      "matched": 29,
       "latest": 28,
       "ld": "2025-07-09",
       "next": 29,
-      "nd": null,
-      "nc": "未定",
+      "nd": "2026-12-09",
+      "nc": "確定",
       "before": {
         "latest": 28,
         "nd": null
