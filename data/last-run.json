@@ -1,6 +1,6 @@
 {
-  "ranAt": "2026-11-12T03:31:05.070Z",
-  "today": "2026-11-12",
+  "ranAt": "2026-11-13T03:04:42.699Z",
+  "today": "2026-11-13",
   "newVolumes": [],
   "titles": [
     {
@@ -286,12 +286,12 @@
     {
       "t": "光が死んだ夏",
       "status": "ok",
-      "matched": 9,
+      "matched": 10,
       "latest": 9,
       "ld": "2026-06-03",
       "next": 10,
-      "nd": null,
-      "nc": "未定",
+      "nd": "2027-01-25",
+      "nc": "確定",
       "before": {
         "latest": 9,
         "nd": null
@@ -300,12 +300,12 @@
     {
       "t": "スーパーの裏でヤニ吸うふたり",
       "status": "ok",
-      "matched": 9,
+      "matched": 10,
       "latest": 9,
       "ld": "2026-07-24",
       "next": 10,
-      "nd": null,
-      "nc": "未定",
+      "nd": "2027-01-25",
+      "nc": "確定",
       "before": {
         "latest": 9,
         "nd": null
@@ -356,12 +356,12 @@
     {
       "t": "おじさまと猫",
       "status": "ok",
-      "matched": 17,
+      "matched": 18,
       "latest": 17,
       "ld": "2026-06-11",
       "next": 18,
-      "nd": null,
-      "nc": "未定",
+      "nd": "2027-01-12",
+      "nc": "確定",
       "before": {
         "latest": 17,
         "nd": null
