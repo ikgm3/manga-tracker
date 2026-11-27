@@ -1,6 +1,6 @@
 {
-  "ranAt": "2026-11-26T04:38:03.622Z",
-  "today": "2026-11-26",
+  "ranAt": "2026-11-27T04:40:48.546Z",
+  "today": "2026-11-27",
   "newVolumes": [],
   "titles": [
     {
@@ -314,12 +314,12 @@
     {
       "t": "星旅少年 -Planetarium ghost travel-",
       "status": "ok",
-      "matched": 6,
+      "matched": 7,
       "latest": 6,
       "ld": "2026-01-23",
       "next": 7,
-      "nd": null,
-      "nc": "未定",
+      "nd": "2026-12-23",
+      "nc": "確定",
       "before": {
         "latest": 6,
         "nd": null
